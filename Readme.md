@@ -1,8 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Олег Новицкий](https://up.htmlacademy.ru/javascript/14/user/480757).
-* Наставник: [Александр Малинов]
-(https://htmlacademy.ru/profile/id40204).
+* Наставник: [Александр Малинов](https://htmlacademy.ru/profile/id40204).
 
 ---
 
