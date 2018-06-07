@@ -43,13 +43,13 @@ var getrandomNumber = function (min, max) {
 
 // Перетасовываем массив
 var getShuffleArray = function (array) {
-	for (var i = array.length - 1; i > 0; i--) {
-		var j = getrandomNumber(0, i);
-		var temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
-	}
-	return array;
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = getrandomNumber(0, i);
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
 };
 
 // Получаем массив с созданными объектами
@@ -61,10 +61,10 @@ var getPhotoInfoArray = function (urlsArray, commentsArray, descriptionsArray) {
     var urlTemp = 'photos/' + urlsArray[i] + '.jpg';
     var likesTemp = getrandomNumber(MIN_LIKES, MAX_LIKES);
     var commentsTemp = [];
+    // Рандомим количество комментов
     for (var j = 0; j < getrandomNumber(MIN_QUANTITY_COMMENTS, MAX_QUANTITY_COMMENTS); j++) {
       commentsTemp[j] = commentsArray[j];
-    };
-    // var commentsTemp = [commentsArray[i], commentsArray[i+1]];
+    }
     var descriptionTemp = descriptionsArray[getrandomNumber(0, descriptionsArray.length - 1)];
     photoInfoTemp[i] =
       {
@@ -72,8 +72,8 @@ var getPhotoInfoArray = function (urlsArray, commentsArray, descriptionsArray) {
         likes: likesTemp,
         comments: commentsTemp,
         description: descriptionTemp
-      }
-  };
+      };
+  }
   return photoInfoTemp;
 };
 // Создаем переменную с полученным массивом
@@ -94,7 +94,7 @@ var fragment = document.createDocumentFragment();
 // Вставляем в фрагмент все карточки
 for (var i = 0; i < photosInfo.length; i++) {
   fragment.appendChild(createCard(photosInfo[i]));
-};
+}
 
 // Вставляем фрагмент в DOM
 var picturesContainer = document.querySelector('.pictures');
