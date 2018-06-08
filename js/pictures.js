@@ -3,6 +3,8 @@
 var template = document.querySelector('#picture').content;
 var picturesContainer = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
+var commentsCount = bigPicture.querySelector('.social__comment-count');
+var commentLoad = bigPicture.querySelector('.social__loadmore');
 var QUANTITY_URLS = 25;
 var MIN_QUANTITY_COMMENTS = 1;
 var MAX_QUANTITY_COMMENTS = 2;
@@ -101,7 +103,7 @@ for (var i = 0; i < photosInfo.length; i++) {
 // Вставляем фрагмент в DOM
 picturesContainer.appendChild(fragment);
 
-// Показываем блок с большой фотографией
+// Показываем блок с большой карточкой
 bigPicture.classList.remove('hidden');
 
 // Создаем фрагмент с комментариями
@@ -121,14 +123,10 @@ var createBigCard = function (array) {
   bigPicture.querySelector('.big-picture__img').querySelector('img').setAttribute('src', array.url);
   bigPicture.querySelector('.likes-count').textContent = array.likes;
   bigPicture.querySelector('.comments-count').textContent = array.comments.length;
-  // bigPicture.querySelector('.social__comments').removeChild(bigPicture.querySelector('.social__comment'));
   bigPicture.querySelector('.social__comments').appendChild(renderComments(array));
   bigPicture.querySelector('.social__caption').textContent = array.description;
 };
 
 createBigCard(photosInfo[0]);
-
-var commentsCount = bigPicture.querySelector('.social__comment-count');
-var commentLoad = bigPicture.querySelector('.social__loadmore');
 commentsCount.classList.add('visually-hidden');
 commentLoad.classList.add('visually-hidden');
