@@ -123,7 +123,13 @@ var createBigCard = function (array) {
   bigPicture.querySelector('.big-picture__img').querySelector('img').setAttribute('src', array.url);
   bigPicture.querySelector('.likes-count').textContent = array.likes;
   bigPicture.querySelector('.comments-count').textContent = array.comments.length;
+  // Определяем количество комментариев по уммолчанию
+  var oldComments = bigPicture.querySelectorAll('.social__comment').length;
   bigPicture.querySelector('.social__comments').appendChild(renderComments(array));
+  // Удаляем старые комментарии
+  for (var i = 0; i < oldComments; i++) {
+    bigPicture.querySelector('.social__comments').removeChild(bigPicture.querySelector('.social__comment'));
+  }
   bigPicture.querySelector('.social__caption').textContent = array.description;
 };
 
