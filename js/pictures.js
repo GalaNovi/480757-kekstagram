@@ -127,7 +127,7 @@ var createBigCard = function (array) {
   var oldComments = bigPicture.querySelectorAll('.social__comment').length;
   bigPicture.querySelector('.social__comments').appendChild(renderComments(array));
   // Удаляем старые комментарии
-  for (var i = 0; i < oldComments; i++) {
+  for (var j = 0; j < oldComments; j++) {
     bigPicture.querySelector('.social__comments').removeChild(bigPicture.querySelector('.social__comment'));
   }
   bigPicture.querySelector('.social__caption').textContent = array.description;
