@@ -1,0 +1,138 @@
+'use strict';
+
+var template = document.querySelector('#picture').content;
+var picturesContainer = document.querySelector('.pictures');
+var bigPicture = document.querySelector('.big-picture');
+var commentsCount = bigPicture.querySelector('.social__comment-count');
+var commentLoad = bigPicture.querySelector('.social__loadmore');
+var QUANTITY_URLS = 25;
+var MIN_QUANTITY_COMMENTS = 1;
+var MAX_QUANTITY_COMMENTS = 2;
+var MIN_LIKES = 15;
+var MAX_LIKES = 200;
+var COMMENTS = [
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
+];
+var DESCRIPTIONS = [
+  'Тестим новую камеру!',
+  'Затусили с друзьями на море',
+  'Как же круто тут кормят',
+  'Отдыхаем...',
+  'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
+  'Вот это тачка!'
+];
+
+// Получаем массив из чисел для интеграции в ссылки
+var getNumbersArray = function (length) {
+  var numbers = [];
+  for (var i = 0; i < length; i++) {
+    numbers[i] = i + 1;
+  }
+  return numbers;
+};
+// Создаем переменную с полученным массивом
+var urls = getNumbersArray(QUANTITY_URLS);
+
+// Получаем рандомное число в нужном диапазоне
+var getrandomNumber = function (min, max) {
+  var number = 0;
+  number = Math.round(Math.random() * (max - min) + min);
+  return number;
+};
+
+// Перетасовываем массив
+var getShuffleArray = function (array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = getrandomNumber(0, i);
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+};
+
+// Получаем массив с созданными объектами
+var getPhotoInfoArray = function (urlsArray, commentsArray, descriptionsArray) {
+  var photoInfoTemp = [];
+  urlsArray = getShuffleArray(urlsArray);
+  commentsArray = getShuffleArray(commentsArray);
+  for (var i = 0; i < urlsArray.length; i++) {
+    var urlTemp = 'photos/' + urlsArray[i] + '.jpg';
+    var likesTemp = getrandomNumber(MIN_LIKES, MAX_LIKES);
+    var commentsTemp = [];
+    // Рандомим количество комментов
+    for (var j = 0; j < getrandomNumber(MIN_QUANTITY_COMMENTS, MAX_QUANTITY_COMMENTS); j++) {
+      commentsTemp[j] = commentsArray[j];
+    }
+    var descriptionTemp = descriptionsArray[getrandomNumber(0, descriptionsArray.length - 1)];
+    photoInfoTemp[i] =
+      {
+        url: urlTemp,
+        likes: likesTemp,
+        comments: commentsTemp,
+        description: descriptionTemp
+      };
+  }
+  return photoInfoTemp;
+};
+// Создаем переменную с полученным массивом
+var photosInfo = getPhotoInfoArray(urls, COMMENTS, DESCRIPTIONS);
+
+// Собираем информацию одной карточки
+var createCard = function (cardsInfo) {
+  var tempCard = template.cloneNode(true);
+  tempCard.querySelector('.picture__img').setAttribute('src', cardsInfo.url);
+  tempCard.querySelector('.picture__stat--likes').textContent = cardsInfo.likes;
+  tempCard.querySelector('.picture__stat--comments').textContent = cardsInfo.comments.length;
+  return tempCard;
+};
+
+// Создаем фрагмент для последующей встави в DOM
+var fragment = document.createDocumentFragment();
+
+// Вставляем в фрагмент все карточки
+for (var i = 0; i < photosInfo.length; i++) {
+  fragment.appendChild(createCard(photosInfo[i]));
+}
+
+// Вставляем фрагмент в DOM
+picturesContainer.appendChild(fragment);
+
+// Показываем блок с большой карточкой
+bigPicture.classList.remove('hidden');
+
+// Создаем фрагмент с комментариями
+var renderComments = function (array) {
+  var fragmentComments = document.createDocumentFragment();
+  for (var j = 0; j < array.comments.length; j++) {
+    var commentExample = bigPicture.querySelector('.social__comment').cloneNode(true);
+    commentExample.classList.add('social__comment--text');
+    commentExample.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + getrandomNumber(1, 6) + '.svg');
+    commentExample.querySelector('.social__text').textContent = array.comments[j];
+    fragmentComments.appendChild(commentExample);
+  }
+  return fragmentComments;
+};
+// вносим изменения в большую карточку
+var createBigCard = function (array) {
+  bigPicture.querySelector('.big-picture__img').querySelector('img').setAttribute('src', array.url);
+  bigPicture.querySelector('.likes-count').textContent = array.likes;
+  bigPicture.querySelector('.comments-count').textContent = array.comments.length;
+  // Определяем количество комментариев по уммолчанию
+  var oldComments = bigPicture.querySelectorAll('.social__comment').length;
+  bigPicture.querySelector('.social__comments').appendChild(renderComments(array));
+  // Удаляем старые комментарии
+  for (var j = 0; j < oldComments; j++) {
+    bigPicture.querySelector('.social__comments').removeChild(bigPicture.querySelector('.social__comment'));
+  }
+  bigPicture.querySelector('.social__caption').textContent = array.description;
+};
+
+createBigCard(photosInfo[0]);
+commentsCount.classList.add('visually-hidden');
+commentLoad.classList.add('visually-hidden');
