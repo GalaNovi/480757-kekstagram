@@ -41,7 +41,7 @@ var urls = getNumbersArray(QUANTITY_URLS);
 // Получаем рандомное число в нужном диапазоне
 var getrandomNumber = function (min, max) {
   var number = 0;
-  number = Math.round(Math.random() * (max - min) + min);
+  number = Math.floor(Math.random() * (max + 1 - min) + min);
   return number;
 };
 
