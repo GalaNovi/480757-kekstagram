@@ -182,13 +182,28 @@ editImageFormClose.addEventListener('keydown', function (evt) {
 
 // ==========================================================================
 
-var imagePreview = document.querySelector('.img-upload__preview');
-var defaultClasses = imagePreview.classList.value;
+var imagePreview = editImageForm.querySelector('.img-upload__preview');
+var defaultClassesImagePreview = imagePreview.classList.value;
+var scalePin = editImageForm.querySelector('.scale__pin');
+var scaleValue = editImageForm.querySelector('.scale__value');
 
-// Применяет к превью фотографии выбраный фильтр
-document.addEventListener('click', function (evt) {
+editImageForm.addEventListener('change', function (evt) {
   if (evt.target.classList.contains('effects__radio')) {
-    imagePreview.classList = defaultClasses;
-    imagePreview.classList.toggle('effects__preview--' + evt.target.value);
+    imagePreview.classList = defaultClassesImagePreview;
+    imagePreview.classList.add('effects__preview--' + evt.target.value);
   }
 });
+
+// Применяет к превью фотографии выбраный фильтр
+// document.addEventListener('click', function (evt) {
+//   if (evt.target.classList.contains('effects__radio')) {
+//     imagePreview.classList = defaultClassesImagePreview;
+//     imagePreview.classList.toggle('effects__preview--' + evt.target.value);
+//   }
+// });
+
+
+
+// scalePin.addEventListener('mouseup', function () {
+//   scalePin
+// });
