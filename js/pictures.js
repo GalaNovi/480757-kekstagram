@@ -1,3 +1,5 @@
+// Уточнить по поводу сброса значения #uploadFile
+
 'use strict';
 
 var template = document.querySelector('#picture').content;
@@ -5,6 +7,11 @@ var picturesContainer = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
 var commentsCount = bigPicture.querySelector('.social__comment-count');
 var commentLoad = bigPicture.querySelector('.social__loadmore');
+var uploadFile = document.querySelector('#upload-file');
+var editImageForm = document.querySelector('.img-upload__overlay');
+var editImageFormClose = document.querySelector('#upload-cancel');
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 var QUANTITY_URLS = 25;
 var MIN_QUANTITY_COMMENTS = 1;
 var MAX_QUANTITY_COMMENTS = 2;
@@ -104,7 +111,7 @@ for (var i = 0; i < photosInfo.length; i++) {
 picturesContainer.appendChild(fragment);
 
 // Показываем блок с большой карточкой
-bigPicture.classList.remove('hidden');
+// bigPicture.classList.remove('hidden');
 
 // Создаем фрагмент с комментариями
 var renderComments = function (array) {
@@ -136,3 +143,52 @@ var createBigCard = function (array) {
 createBigCard(photosInfo[0]);
 commentsCount.classList.add('visually-hidden');
 commentLoad.classList.add('visually-hidden');
+
+// Закрывает попап при нажатии на ESC
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeEditImageForm();
+  }
+};
+
+// Открывает попап и вешает на документ обработчик нажатия ESC
+var openEditImageForm = function () {
+  editImageForm.classList.remove('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+// Закрывает попап и удаляет обработчик нажатия ESC
+var closeEditImageForm = function () {
+  editImageForm.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+// При загрузке файла открывается форма для его редактирования
+uploadFile.addEventListener('change', function () {
+  openEditImageForm();
+});
+
+// Закрывает попап при нажатии на крестик
+editImageFormClose.addEventListener('click', function () {
+  closeEditImageForm();
+});
+
+// Закрывает попап при нажатии ENTER на крестике
+editImageFormClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closeEditImageForm();
+  }
+});
+
+// ==========================================================================
+
+var imagePreview = document.querySelector('.img-upload__preview');
+var defaultClasses = imagePreview.classList.value;
+
+// Применяет к превью фотографии выбраный фильтр
+document.addEventListener('click', function (evt) {
+  if (evt.target.classList.contains('effects__radio')) {
+    imagePreview.classList = defaultClasses;
+    imagePreview.classList.toggle('effects__preview--' + evt.target.value);
+  }
+});
