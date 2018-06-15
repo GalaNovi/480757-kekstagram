@@ -5,6 +5,12 @@ var picturesContainer = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
 var commentsCount = bigPicture.querySelector('.social__comment-count');
 var commentLoad = bigPicture.querySelector('.social__loadmore');
+var uploadFile = document.querySelector('#upload-file');
+var editImageForm = document.querySelector('.img-upload__overlay');
+var editImageFormClose = document.querySelector('#upload-cancel');
+var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 var QUANTITY_URLS = 25;
 var MIN_QUANTITY_COMMENTS = 1;
 var MAX_QUANTITY_COMMENTS = 2;
@@ -41,7 +47,7 @@ var urls = getNumbersArray(QUANTITY_URLS);
 // Получаем рандомное число в нужном диапазоне
 var getrandomNumber = function (min, max) {
   var number = 0;
-  number = Math.round(Math.random() * (max - min) + min);
+  number = Math.floor(Math.random() * (max + 1 - min) + min);
   return number;
 };
 
@@ -103,9 +109,6 @@ for (var i = 0; i < photosInfo.length; i++) {
 // Вставляем фрагмент в DOM
 picturesContainer.appendChild(fragment);
 
-// Показываем блок с большой карточкой
-bigPicture.classList.remove('hidden');
-
 // Создаем фрагмент с комментариями
 var renderComments = function (array) {
   var fragmentComments = document.createDocumentFragment();
@@ -136,3 +139,141 @@ var createBigCard = function (array) {
 createBigCard(photosInfo[0]);
 commentsCount.classList.add('visually-hidden');
 commentLoad.classList.add('visually-hidden');
+
+// Закрывает попап при нажатии на ESC
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeEditImageForm();
+  }
+};
+
+// Открывает попап и вешает на документ обработчик нажатия ESC
+var openEditImageForm = function () {
+  editImageForm.classList.remove('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+// Закрывает попап, удаляет значение поля выбора файла и обработчик нажатия ESC
+var closeEditImageForm = function () {
+  editImageForm.classList.add('hidden');
+  uploadFile.value = '';
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+// При загрузке файла открывается форма для его редактирования
+uploadFile.addEventListener('change', function () {
+  openEditImageForm();
+});
+
+// Закрывает попап при нажатии на крестик
+editImageFormClose.addEventListener('click', function () {
+  closeEditImageForm();
+});
+
+// Закрывает попап при нажатии ENTER на крестике
+editImageFormClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closeEditImageForm();
+  }
+});
+
+// ======================= Применение фильтров ============================
+
+var imagePreview = editImageForm.querySelector('.img-upload__preview');
+var defaultClassesImagePreview = imagePreview.classList.value;
+var scalePin = editImageForm.querySelector('.scale__pin');
+var scaleLevel = editImageForm.querySelector('.scale__level');
+var scaleValue = editImageForm.querySelector('.scale__value');
+var defaultFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
+var SCALE_PIN_VALUE_DEFAULT = '100%';
+
+// Оставляет только цифры в строке
+var getNumberfromString = function (string) {
+  var symbols = string.split('');
+  for (var j = 0; j < symbols.length; j++) {
+    if (isNaN(Number(symbols[j]))) {
+      symbols[j] = '';
+    }
+  }
+  string = symbols.join('');
+  return string;
+};
+
+// Определяет уровень применения фильтра
+var getlevelFilter = function () {
+  scaleValue.value = getNumberfromString(scalePin.style.left);
+  var filtersStyles = {
+    chrome: 'grayscale(' + 1 / 100 * scaleValue.value + ')',
+    sepia: 'sepia(' + 1 / 100 * scaleValue.value + ')',
+    marvin: 'invert(' + scaleValue.value + '%)',
+    phobos: 'blur(' + 3 / 100 * scaleValue.value + 'px)',
+    heat: 'brightness(' + ((2 / 100 * scaleValue.value) + 1) + ')'
+  };
+  var currentFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
+  imagePreview.style.filter = filtersStyles[currentFilter];
+  scaleLevel.style.width = scalePin.style.left;
+};
+
+// При переключении фильтра применяет его к превью фотографии
+editImageForm.addEventListener('change', function (evt) {
+  if (evt.target.classList.contains('effects__radio')) {
+    if (evt.target.value === 'none') {
+      imagePreview.classList = defaultClassesImagePreview;
+      imagePreview.style.filter = 'none';
+    } else {
+      scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
+      getlevelFilter();
+      imagePreview.classList = defaultClassesImagePreview;
+      imagePreview.classList.add('effects__preview--' + evt.target.value);
+    }
+  }
+});
+
+// Изменяет уровень применения фильтра при отпускании мыши
+scalePin.addEventListener('mouseup', function () {
+  getlevelFilter();
+});
+
+// Применяем дефолтный фильтр при открытии страницы, ставим пин на
+// дефолтное значение и применяем соответствующий уровень фильтра
+imagePreview.classList.add('effects__preview--' + defaultFilter);
+scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
+getlevelFilter();
+
+// Закрывает просмотр фотографии при нажатии на ESC
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPicture();
+  }
+};
+
+// Открывает просмотр фотографии и вешает на документ обработчик нажатия ESC
+var openBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+// Закрывает просмотр фотографии, удаляет значение поля выбора файла и обработчик нажатия ESC
+var closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+// Закрывает просмотр фотографии при нажатии на крестик
+bigPictureClose.addEventListener('click', function () {
+  closeBigPicture();
+});
+
+// Закрывает просмотр фотографии при нажатии ENTER на крестике
+bigPictureClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closeBigPicture();
+  }
+});
+
+// Открывает просмотр фотографии при клике на фото
+document.addEventListener('click', function (evt) {
+  if (evt.target.classList.contains('picture__img')) {
+    openBigPicture();
+  }
+});
