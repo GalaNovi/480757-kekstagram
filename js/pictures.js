@@ -8,6 +8,7 @@ var commentLoad = bigPicture.querySelector('.social__loadmore');
 var uploadFile = document.querySelector('#upload-file');
 var editImageForm = document.querySelector('.img-upload__overlay');
 var editImageFormClose = document.querySelector('#upload-cancel');
+var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 var QUANTITY_URLS = 25;
@@ -107,9 +108,6 @@ for (var i = 0; i < photosInfo.length; i++) {
 
 // Вставляем фрагмент в DOM
 picturesContainer.appendChild(fragment);
-
-// Показываем блок с большой карточкой
-// bigPicture.classList.remove('hidden');
 
 // Создаем фрагмент с комментариями
 var renderComments = function (array) {
@@ -241,3 +239,41 @@ scalePin.addEventListener('mouseup', function () {
 imagePreview.classList.add('effects__preview--' + defaultFilter);
 scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
 getlevelFilter();
+
+// Закрывает просмотр фотографии при нажатии на ESC
+var onBigPictureEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBigPicture();
+  }
+};
+
+// Открывает просмотр фотографии и вешает на документ обработчик нажатия ESC
+var openBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+  document.addEventListener('keydown', onBigPictureEscPress);
+};
+
+// Закрывает просмотр фотографии, удаляет значение поля выбора файла и обработчик нажатия ESC
+var closeBigPicture = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('keydown', onBigPictureEscPress);
+};
+
+// Закрывает просмотр фотографии при нажатии на крестик
+bigPictureClose.addEventListener('click', function () {
+  closeBigPicture();
+});
+
+// Закрывает просмотр фотографии при нажатии ENTER на крестике
+bigPictureClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closeBigPicture();
+  }
+});
+
+// Открывает просмотр фотографии при клике на фото
+document.addEventListener('click', function (evt) {
+  if (evt.target.classList.contains('picture__img')) {
+    openBigPicture();
+  }
+});
