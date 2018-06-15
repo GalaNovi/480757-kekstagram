@@ -1,5 +1,3 @@
-// Уточнить по поводу сброса значения #uploadFile
-
 'use strict';
 
 var template = document.querySelector('#picture').content;
@@ -157,9 +155,10 @@ var openEditImageForm = function () {
   document.addEventListener('keydown', onPopupEscPress);
 };
 
-// Закрывает попап и удаляет обработчик нажатия ESC
+// Закрывает попап, удаляет значение поля выбора файла и обработчик нажатия ESC
 var closeEditImageForm = function () {
   editImageForm.classList.add('hidden');
+  uploadFile.value = '';
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
@@ -180,30 +179,65 @@ editImageFormClose.addEventListener('keydown', function (evt) {
   }
 });
 
-// ==========================================================================
+// ======================= Применение фильтров ============================
 
 var imagePreview = editImageForm.querySelector('.img-upload__preview');
 var defaultClassesImagePreview = imagePreview.classList.value;
 var scalePin = editImageForm.querySelector('.scale__pin');
+var scaleLevel = editImageForm.querySelector('.scale__level');
 var scaleValue = editImageForm.querySelector('.scale__value');
+var defaultFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
+var SCALE_PIN_VALUE_DEFAULT = '100%';
 
+// Оставляет только цифры в строке
+var getNumberfromString = function (string) {
+  var symbols = string.split('');
+  for (var j = 0; j < symbols.length; j++) {
+    if (isNaN(Number(symbols[j]))) {
+      symbols[j] = '';
+    }
+  }
+  string = symbols.join('');
+  return string;
+};
+
+// Определяет уровень применения фильтра
+var getlevelFilter = function () {
+  scaleValue.value = getNumberfromString(scalePin.style.left);
+  var filtersStyles = {
+    chrome: 'grayscale(' + 1 / 100 * scaleValue.value + ')',
+    sepia: 'sepia(' + 1 / 100 * scaleValue.value + ')',
+    marvin: 'invert(' + scaleValue.value + '%)',
+    phobos: 'blur(' + 3 / 100 * scaleValue.value + 'px)',
+    heat: 'brightness(' + ((2 / 100 * scaleValue.value) + 1) + ')'
+  };
+  var currentFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
+  imagePreview.style.filter = filtersStyles[currentFilter];
+  scaleLevel.style.width = scalePin.style.left;
+};
+
+// При переключении фильтра применяет его к превью фотографии
 editImageForm.addEventListener('change', function (evt) {
   if (evt.target.classList.contains('effects__radio')) {
-    imagePreview.classList = defaultClassesImagePreview;
-    imagePreview.classList.add('effects__preview--' + evt.target.value);
+    if (evt.target.value === 'none') {
+      imagePreview.classList = defaultClassesImagePreview;
+      imagePreview.style.filter = 'none';
+    } else {
+      scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
+      getlevelFilter();
+      imagePreview.classList = defaultClassesImagePreview;
+      imagePreview.classList.add('effects__preview--' + evt.target.value);
+    }
   }
 });
 
-// Применяет к превью фотографии выбраный фильтр
-// document.addEventListener('click', function (evt) {
-//   if (evt.target.classList.contains('effects__radio')) {
-//     imagePreview.classList = defaultClassesImagePreview;
-//     imagePreview.classList.toggle('effects__preview--' + evt.target.value);
-//   }
-// });
+// Изменяет уровень применения фильтра при отпускании мыши
+scalePin.addEventListener('mouseup', function () {
+  getlevelFilter();
+});
 
-
-
-// scalePin.addEventListener('mouseup', function () {
-//   scalePin
-// });
+// Применяем дефолтный фильтр при открытии страницы, ставим пин на
+// дефолтное значение и применяем соответствующий уровень фильтра
+imagePreview.classList.add('effects__preview--' + defaultFilter);
+scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
+getlevelFilter();
