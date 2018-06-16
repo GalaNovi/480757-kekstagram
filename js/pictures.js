@@ -140,6 +140,8 @@ createBigCard(photosInfo[0]);
 commentsCount.classList.add('visually-hidden');
 commentLoad.classList.add('visually-hidden');
 
+// ================== Открытие окна при загрузке фото ==============================
+
 // Закрывает попап при нажатии на ESC
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
@@ -276,4 +278,25 @@ document.addEventListener('click', function (evt) {
   if (evt.target.classList.contains('picture__img')) {
     openBigPicture();
   }
+});
+
+// ===================== Поля формы ========================
+
+var descriptionField = document.querySelector('.text__description');
+var hashtagsField = document.querySelector('.text__hashtags');
+
+descriptionField.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
+descriptionField.addEventListener('blur', function () {
+  document.addEventListener('keydown', onPopupEscPress);
+});
+
+hashtagsField.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
+hashtagsField.addEventListener('blur', function () {
+  document.addEventListener('keydown', onPopupEscPress);
 });
