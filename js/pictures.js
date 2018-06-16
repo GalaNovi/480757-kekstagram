@@ -221,8 +221,8 @@ var checkQuantity = function (hashtags) {
 
 // Проверяет длину одного хештега
 var checkLength = function (hashtags) {
-  for (var i = 0; i < hashtags.length; i++) {
-    if (hashtags[i].length > MAX_HASHTAG_LENGTH) {
+  for (var j = 0; j < hashtags.length; j++) {
+    if (hashtags[j].length > MAX_HASHTAG_LENGTH) {
       return false;
     }
   }
@@ -231,8 +231,8 @@ var checkLength = function (hashtags) {
 
 // Проверяет правильность написания хештегов
 var checkHashtagsNames = function (hashtags) {
-  for (var i = 0; i < hashtags.length; i++) {
-    var hashtagSymbols = hashtags[i].split('');
+  for (var j = 0; j < hashtags.length; j++) {
+    var hashtagSymbols = hashtags[j].split('');
     if (hashtagSymbols[0] !== '#' || hashtagSymbols.length < MIN_HASHTAG_LENGTH) {
       return false;
     }
@@ -242,10 +242,10 @@ var checkHashtagsNames = function (hashtags) {
 
 // Проверяет, что бы решетка была только в начале хештега
 var checkHashInName = function (hashtags) {
-  for (var i = 0; i < hashtags.length; i++) {
-    var hashtagSymbols = hashtags[i].split('');
-    for (var j = 1; j < hashtagSymbols.length; j++) {
-      if (hashtagSymbols[j] === '#') {
+  for (var j = 0; j < hashtags.length; j++) {
+    var hashtagSymbols = hashtags[j].split('');
+    for (var n = 1; n < hashtagSymbols.length; n++) {
+      if (hashtagSymbols[n] === '#') {
         return false;
       }
     }
@@ -255,10 +255,9 @@ var checkHashInName = function (hashtags) {
 
 // Проветяет наличие повторяющихся хештегов
 var checkRepeating = function (hashtags) {
-  for (var i = 0; i < hashtags.length - 1; i++) {
-    var currentHashtag = hashtags[i];
-    for (var j = i + 1; j < hashtags.length; j++) {
-      if (hashtags[i].toLowerCase() === hashtags[j].toLowerCase()) {
+  for (var j = 0; j < hashtags.length - 1; j++) {
+    for (var n = j + 1; n < hashtags.length; n++) {
+      if (hashtags[j].toLowerCase() === hashtags[n].toLowerCase()) {
         return false;
       }
     }
