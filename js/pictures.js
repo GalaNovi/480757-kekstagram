@@ -140,6 +140,14 @@ createBigCard(photosInfo[0]);
 commentsCount.classList.add('visually-hidden');
 commentLoad.classList.add('visually-hidden');
 
+// =========== Открытие окна при загрузке фото и ограничения полей ==================
+
+var descriptionField = document.querySelector('.text__description');
+var hashtagsField = document.querySelector('.text__hashtags');
+var MAX_HASHTAG_LENGTH = 20;
+var MIN_HASHTAG_LENGTH = 4;
+var HASHTAGS_QUANTITY = 5;
+
 // Закрывает попап при нажатии на ESC
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
@@ -174,6 +182,105 @@ editImageFormClose.addEventListener('click', function () {
 editImageFormClose.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     closeEditImageForm();
+  }
+});
+
+// Убирает обработчик нажатия ESC, когда поле в фокусе
+descriptionField.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
+// Вешает на документ обработчик нажатия ESC, когда поле теряет фокус
+descriptionField.addEventListener('blur', function () {
+  document.addEventListener('keydown', onPopupEscPress);
+});
+
+// Убирает обработчик нажатия ESC, когда поле в фокусе
+hashtagsField.addEventListener('focus', function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+});
+
+// Вешает на документ обработчик нажатия ESC, когда поле теряет фокус
+hashtagsField.addEventListener('blur', function () {
+  document.addEventListener('keydown', onPopupEscPress);
+});
+
+// Получаем массив из хештегов
+var getHashtags = function (valueHashtagsField) {
+  var hashtags = valueHashtagsField.split(' ');
+  return hashtags;
+};
+
+// Проверяет количество хештегов
+var checkQuantity = function (hashtags) {
+  if (hashtags.length > HASHTAGS_QUANTITY) {
+    return false;
+  }
+  return true;
+};
+
+// Проверяет длину одного хештега
+var checkLength = function (hashtags) {
+  for (var j = 0; j < hashtags.length; j++) {
+    if (hashtags[j].length > MAX_HASHTAG_LENGTH) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Проверяет правильность написания хештегов
+var checkHashtagsNames = function (hashtags) {
+  for (var j = 0; j < hashtags.length; j++) {
+    var hashtagSymbols = hashtags[j].split('');
+    if (hashtagSymbols[0] !== '#' || hashtagSymbols.length < MIN_HASHTAG_LENGTH) {
+      return false;
+    }
+  }
+  return true;
+};
+
+// Проверяет, что бы решетка была только в начале хештега
+var checkHashInName = function (hashtags) {
+  for (var j = 0; j < hashtags.length; j++) {
+    var hashtagSymbols = hashtags[j].split('');
+    for (var n = 1; n < hashtagSymbols.length; n++) {
+      if (hashtagSymbols[n] === '#') {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+// Проветяет наличие повторяющихся хештегов
+var checkRepeating = function (hashtags) {
+  for (var j = 0; j < hashtags.length - 1; j++) {
+    for (var n = j + 1; n < hashtags.length; n++) {
+      if (hashtags[j].toLowerCase() === hashtags[n].toLowerCase()) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+
+hashtagsField.addEventListener('input', function (evt) {
+  var field = evt.target;
+  var hashtags = getHashtags(field.value);
+  if (!checkHashtagsNames(hashtags)) {
+    field.setCustomValidity('Хештег должен начинаться с "#" и содержать не менее ' + (MIN_HASHTAG_LENGTH - 1) + ' символов');
+  } else if (!checkQuantity(hashtags)) {
+    field.setCustomValidity('Максимальное количество тегов: ' + HASHTAGS_QUANTITY);
+  } else if (!checkLength(hashtags)) {
+    field.setCustomValidity('Максимальная длинна тега (включая сомвол "#"): ' + MAX_HASHTAG_LENGTH);
+  } else if (!checkHashInName(hashtags)) {
+    field.setCustomValidity('Хештеги должны разделяться пробелами');
+  } else if (!checkRepeating(hashtags)) {
+    field.setCustomValidity('Хештеги не должны повторяться');
+  } else {
+    field.setCustomValidity('');
   }
 });
 
