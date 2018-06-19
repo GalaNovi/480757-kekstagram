@@ -1,5 +1,11 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
+var QUANTITY_URLS = 25;
+var MIN_QUANTITY_COMMENTS = 1;
+var MAX_QUANTITY_COMMENTS = 2;
+var MIN_LIKES = 15;
+var MAX_LIKES = 200;
 var template = document.querySelector('#picture').content;
 var picturesContainer = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
@@ -9,13 +15,7 @@ var uploadFile = document.querySelector('#upload-file');
 var editImageForm = document.querySelector('.img-upload__overlay');
 var editImageFormClose = document.querySelector('#upload-cancel');
 var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
-var QUANTITY_URLS = 25;
-var MIN_QUANTITY_COMMENTS = 1;
-var MAX_QUANTITY_COMMENTS = 2;
-var MIN_LIKES = 15;
-var MAX_LIKES = 200;
+var fragment = document.createDocumentFragment();
 var comments = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -98,9 +98,6 @@ var createCard = function (cardsInfo) {
   return tempCard;
 };
 
-// Создаем фрагмент для последующей встави в DOM
-var fragment = document.createDocumentFragment();
-
 // Вставляем в фрагмент все карточки
 var insetCards = function () {
   for (var i = 0; i < photoParameters.length; i++) {
@@ -124,6 +121,7 @@ var renderСomments = function (object) {
   }
   return fragmentcomments;
 };
+
 // вносим изменения в большую карточку
 var createBigCard = function (object) {
   bigPicture.querySelector('.big-picture__img').querySelector('img').setAttribute('src', object.url);
@@ -145,15 +143,16 @@ commentLoad.classList.add('visually-hidden');
 
 // =========== Открытие окна при загрузке фото и ограничения полей ==================
 
-var descriptionField = document.querySelector('.text__description');
-var hashtagsField = document.querySelector('.text__hashtags');
 var MAX_HASHTAG_LENGTH = 20;
 var MIN_HASHTAG_LENGTH = 4;
 var HASHTAGS_QUANTITY = 5;
+var descriptionField = document.querySelector('.text__description');
+var hashtagsField = document.querySelector('.text__hashtags');
 
-// Закрывает попап при нажатии на ESC
+// Закрывает попап при нажатии на ESC (если ни одно из текстовых полей не активно)
 var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  var isFieldActive = document.activeElement === hashtagsField || document.activeElement === descriptionField;
+  if (evt.keyCode === ESC_KEYCODE && !isFieldActive) {
     closeEditImageForm();
     document.removeEventListener('keydown', onPopupEscPress);
   }
@@ -182,25 +181,7 @@ editImageFormClose.addEventListener('click', function () {
   document.removeEventListener('keydown', onPopupEscPress);
 });
 
-// Убирает обработчик нажатия ESC, когда поле в фокусе
-descriptionField.addEventListener('focus', function () {
-  document.removeEventListener('keydown', onPopupEscPress);
-});
-
-// Вешает на документ обработчик нажатия ESC, когда поле теряет фокус
-descriptionField.addEventListener('blur', function () {
-  document.addEventListener('keydown', onPopupEscPress);
-});
-
-// Убирает обработчик нажатия ESC, когда поле в фокусе
-hashtagsField.addEventListener('focus', function () {
-  document.removeEventListener('keydown', onPopupEscPress);
-});
-
-// Вешает на документ обработчик нажатия ESC, когда поле теряет фокус
-hashtagsField.addEventListener('blur', function () {
-  document.addEventListener('keydown', onPopupEscPress);
-});
+// ======================= Правила ввода хештегов ======================
 
 // Получаем массив из хештегов
 var getHashtags = function (valueHashtagsField) {
@@ -262,7 +243,6 @@ var checkRepeating = function (hashtags) {
   return true;
 };
 
-
 hashtagsField.addEventListener('input', function (evt) {
   var field = evt.target;
   var hashtags = getHashtags(field.value);
@@ -283,13 +263,13 @@ hashtagsField.addEventListener('input', function (evt) {
 
 // ======================= Применение фильтров ============================
 
+var SCALE_PIN_VALUE_DEFAULT = '100%';
 var imagePreview = editImageForm.querySelector('.img-upload__preview');
 var defaultClassesImagePreview = imagePreview.classList.value;
 var scalePin = editImageForm.querySelector('.scale__pin');
 var scaleLevel = editImageForm.querySelector('.scale__level');
 var scaleValue = editImageForm.querySelector('.scale__value');
 var defaultFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
-var SCALE_PIN_VALUE_DEFAULT = '100%';
 
 // Определяет уровень применения фильтра
 var getLevelsFilters = function () {
@@ -305,6 +285,7 @@ var getLevelsFilters = function () {
   return levelsFilters;
 };
 
+// Линия уровня меняется в зависимости от положения ползунка
 var changeScaleValue = function () {
   scaleLevel.style.width = scalePin.style.left;
 };
