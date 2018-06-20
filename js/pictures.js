@@ -366,9 +366,16 @@ document.addEventListener('click', function (evt) {
 // ========================= Перетаскивание слайдера ==========================
 
 var scaleLine = document.querySelector('.scale__line');
+scaleLine.style.cursor = 'pointer';
 
-scalePin.addEventListener('mousedown', function (evt) {
+scaleLine.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
+
+  // перемещает пин на место нажатия мышкой
+  if (evt.target === scaleLine || evt.target === scaleLevel) {
+    scalePin.style.left = (evt.offsetX / scaleLine.offsetWidth * 100) + '%';
+    applyFilter(currentFilter);
+  }
 
   var pinStartCoordinateX = evt.clientX;
 
