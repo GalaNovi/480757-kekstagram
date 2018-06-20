@@ -265,65 +265,70 @@ hashtagsField.addEventListener('input', function (evt) {
 
 var SCALE_PIN_VALUE_DEFAULT = '100%';
 var imagePreview = editImageForm.querySelector('.img-upload__preview');
-var defaultClassesImagePreview = imagePreview.classList.value;
 var scalePin = editImageForm.querySelector('.scale__pin');
 var scaleLevel = editImageForm.querySelector('.scale__level');
 var scaleValue = editImageForm.querySelector('.scale__value');
-var defaultFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
+var currentFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
+var scaleBar = editImageForm.querySelector('.img-upload__scale');
 
-// Определяет уровень применения фильтра
-var getLevelsFilters = function () {
-  scaleValue.value = parseInt(scalePin.style.left, 10);
+// Определяет уровень применения нужного фильтра
+var getLevelFilter = function (filter) {
   var levelsFilters = {
+    none: '',
     chrome: 'grayscale(' + 1 / 100 * scaleValue.value + ')',
     sepia: 'sepia(' + 1 / 100 * scaleValue.value + ')',
     marvin: 'invert(' + scaleValue.value + '%)',
     phobos: 'blur(' + 3 / 100 * scaleValue.value + 'px)',
     heat: 'brightness(' + ((2 / 100 * scaleValue.value) + 1) + ')'
   };
-
-  return levelsFilters;
+  return levelsFilters[filter];
 };
 
-// Линия уровня меняется в зависимости от положения ползунка
-var changeScaleValue = function () {
+// Линия уровня меняется в зависимости от положения пина
+var changeScaleWidth = function () {
   scaleLevel.style.width = scalePin.style.left;
 };
 
-// Применяет выбранный фильтр
-var applyFilter = function (levelsFilters) {
-  var currentFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
-  imagePreview.style.filter = levelsFilters[currentFilter];
+// Передает положение пина для вычисления уровня насыщенности
+var changeScaleValue = function () {
+  scaleValue.value = parseFloat(scalePin.style.left, 10);
+};
+
+// Применяет фильтр
+var applyFilter = function (filter) {
+  changeScaleWidth();
+  changeScaleValue();
+  imagePreview.style.filter = getLevelFilter(filter);
+};
+
+// Меняет фильтр на выбранный
+var changeFilter = function (evt) {
+  scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
+  imagePreview.classList.remove('effects__preview--' + currentFilter);
+  imagePreview.classList.add('effects__preview--' + evt.target.value);
+  applyFilter(evt.target.value);
+  currentFilter = evt.target.value;
+};
+
+// Функция смены фильта
+var onFilterChange = function (evt) {
+  evt.preventDefault();
+  if (evt.target.value === 'none') {
+    scaleBar.style.display = 'none';
+  } else if (evt.target.value !== currentFilter) {
+    scaleBar.style.display = 'block';
+  }
+  changeFilter(evt);
 };
 
 // При переключении фильтра применяет его к превью фотографии
-editImageForm.addEventListener('change', function (evt) {
-  if (evt.target.classList.contains('effects__radio')) {
-    if (evt.target.value === 'none') {
-      imagePreview.classList = defaultClassesImagePreview;
-      imagePreview.style.filter = 'none';
-    } else {
-      scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
-      changeScaleValue();
-      applyFilter(getLevelsFilters());
-      imagePreview.classList = defaultClassesImagePreview;
-      imagePreview.classList.add('effects__preview--' + evt.target.value);
-    }
-  }
-});
-
-// Применяет фильтр при отпускании мыши
-scalePin.addEventListener('mouseup', function () {
-  changeScaleValue();
-  applyFilter(getLevelsFilters());
-});
+editImageForm.addEventListener('change', onFilterChange);
 
 // Применяем дефолтный фильтр при открытии страницы, ставим пин на
 // дефолтное значение и применяем соответствующий уровень фильтра
-imagePreview.classList.add('effects__preview--' + defaultFilter);
+imagePreview.classList.add('effects__preview--' + currentFilter);
 scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
-changeScaleValue();
-applyFilter(getLevelsFilters());
+applyFilter(currentFilter);
 
 // ================== Окно просмотра большой фотографии =============
 
@@ -356,4 +361,41 @@ document.addEventListener('click', function (evt) {
     openBigPicture();
     document.addEventListener('keydown', onBigPictureEscPress);
   }
+});
+
+// ========================= Перетаскивание слайдера ==========================
+
+var scaleLine = document.querySelector('.scale__line');
+
+scalePin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var pinStartCoordinateX = evt.clientX;
+
+  var onPinMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = pinStartCoordinateX - moveEvt.clientX;
+
+    pinStartCoordinateX = moveEvt.clientX;
+
+    var scalePinLeft = ((scalePin.offsetLeft - shift) / scaleLine.offsetWidth * 100) + '%';
+
+    if (parseFloat(scalePinLeft, 10) < 0 || parseFloat(scalePinLeft, 10) > 100) {
+      return;
+    } else {
+      scalePin.style.left = scalePinLeft;
+    }
+    applyFilter(currentFilter);
+  };
+
+  var onPinMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onPinMouseMove);
+    document.removeEventListener('mouseup', onPinMouseUp);
+  };
+
+  document.addEventListener('mousemove', onPinMouseMove);
+  document.addEventListener('mouseup', onPinMouseUp);
 });
