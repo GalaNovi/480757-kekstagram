@@ -185,81 +185,64 @@ editImageFormClose.addEventListener('click', function () {
 
 // Получаем массив из хештегов
 var getHashtags = function (valueHashtagsField) {
-  var hashtags = valueHashtagsField.split(' ');
-  return hashtags;
+  return valueHashtagsField.split(' ');
 };
 
 // Проверяет количество хештегов
 var checkQuantity = function (hashtags) {
-  if (hashtags.length > HASHTAGS_QUANTITY) {
-    return false;
-  }
-  return true;
+  return hashtags.length < HASHTAGS_QUANTITY;
 };
 
 // Проверяет длину одного хештега
 var checkLength = function (hashtags) {
-  for (var j = 0; j < hashtags.length; j++) {
-    if (hashtags[j].length > MAX_HASHTAG_LENGTH) {
-      return false;
-    }
-  }
-  return true;
+  return hashtags.every(function (hashtag) {
+    return hashtag.length <= MAX_HASHTAG_LENGTH;
+  });
 };
 
 // Проверяет правильность написания хештегов
 var checkHashtagsNames = function (hashtags) {
-  for (var j = 0; j < hashtags.length; j++) {
-    var hashtagSymbols = hashtags[j].split('');
-    if (hashtagSymbols[0] !== '#' || hashtagSymbols.length < MIN_HASHTAG_LENGTH) {
-      return false;
-    }
-  }
-  return true;
+  return hashtags.every(function (hashtag) {
+    return hashtag[0] === '#' && hashtag.length >= MIN_HASHTAG_LENGTH;
+  });
 };
 
 // Проверяет, что бы решетка была только в начале хештега
 var checkHashInName = function (hashtags) {
-  for (var j = 0; j < hashtags.length; j++) {
-    var hashtagSymbols = hashtags[j].split('');
-    for (var n = 1; n < hashtagSymbols.length; n++) {
-      if (hashtagSymbols[n] === '#') {
-        return false;
-      }
-    }
-  }
-  return true;
+  return hashtags.every(function (hashtag) {
+    return hashtag.indexOf('#') === hashtag.lastIndexOf('#');
+  });
 };
 
 // Проветяет наличие повторяющихся хештегов
 var checkRepeating = function (hashtags) {
-  for (var j = 0; j < hashtags.length - 1; j++) {
-    for (var n = j + 1; n < hashtags.length; n++) {
-      if (hashtags[j].toLowerCase() === hashtags[n].toLowerCase()) {
-        return false;
-      }
-    }
-  }
-  return true;
+  var tempHashtags = hashtags.map(function (hashtag) {
+    return hashtag.toLowerCase();
+  });
+  return !tempHashtags.some(function (hashtag) {
+    return tempHashtags.indexOf(hashtag) !== tempHashtags.lastIndexOf(hashtag);
+  });
 };
 
-hashtagsField.addEventListener('input', function (evt) {
-  var field = evt.target;
-  var hashtags = getHashtags(field.value);
+// Проверяет правильность написания и добавляет соответствующий текст ошибки.
+var onInputChange = function () {
+  var hashtags = getHashtags(hashtagsField.value);
   if (!checkHashtagsNames(hashtags)) {
-    field.setCustomValidity('Хештег должен начинаться с "#" и содержать не менее ' + (MIN_HASHTAG_LENGTH - 1) + ' символов');
+    hashtagsField.setCustomValidity('Хештег должен начинаться с "#" и содержать не менее ' + (MIN_HASHTAG_LENGTH - 1) + ' символов');
   } else if (!checkQuantity(hashtags)) {
-    field.setCustomValidity('Максимальное количество тегов: ' + HASHTAGS_QUANTITY);
+    hashtagsField.setCustomValidity('Максимальное количество тегов: ' + HASHTAGS_QUANTITY);
   } else if (!checkLength(hashtags)) {
-    field.setCustomValidity('Максимальная длинна тега (включая сомвол "#"): ' + MAX_HASHTAG_LENGTH);
+    hashtagsField.setCustomValidity('Максимальная длинна тега (включая сомвол "#"): ' + MAX_HASHTAG_LENGTH);
   } else if (!checkHashInName(hashtags)) {
-    field.setCustomValidity('Хештеги должны разделяться пробелами');
+    hashtagsField.setCustomValidity('Хештеги должны разделяться пробелами');
   } else if (!checkRepeating(hashtags)) {
-    field.setCustomValidity('Хештеги не должны повторяться');
+    hashtagsField.setCustomValidity('Хештеги не должны повторяться');
   } else {
-    field.setCustomValidity('');
+    hashtagsField.setCustomValidity('');
   }
-});
+};
+
+hashtagsField.addEventListener('input', onInputChange);
 
 // ======================= Применение фильтров ============================
 
@@ -284,41 +267,43 @@ var getLevelFilter = function (filter) {
   return levelsFilters[filter];
 };
 
-// Линия уровня меняется в зависимости от положения пина
-var changeScaleWidth = function () {
-  scaleLevel.style.width = scalePin.style.left;
-};
-
 // Передает положение пина для вычисления уровня насыщенности
+// Линия уровня меняется в зависимости от положения пина
 var changeScaleValue = function () {
   scaleValue.value = parseFloat(scalePin.style.left, 10);
+  scaleLevel.style.width = scalePin.style.left;
 };
 
 // Применяет фильтр
 var applyFilter = function (filter) {
-  changeScaleWidth();
   changeScaleValue();
   imagePreview.style.filter = getLevelFilter(filter);
 };
 
+// Прячет слайдер если фильтра нет. Если есть - показывает.
+var switchFilterPanel = function (filterType) {
+  if (filterType === 'none') {
+    scaleBar.style.display = 'none';
+  } else if (filterType !== currentFilter) {
+    scaleBar.style.display = 'block';
+  }
+};
+
 // Меняет фильтр на выбранный
-var changeFilter = function (evt) {
+var changeFilter = function (filterType) {
+  switchFilterPanel(filterType);
   scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
   imagePreview.classList.remove('effects__preview--' + currentFilter);
-  imagePreview.classList.add('effects__preview--' + evt.target.value);
-  applyFilter(evt.target.value);
-  currentFilter = evt.target.value;
+  imagePreview.classList.add('effects__preview--' + filterType);
+  applyFilter(filterType);
+  currentFilter = filterType;
 };
 
 // Функция смены фильта
 var onFilterChange = function (evt) {
   evt.preventDefault();
-  if (evt.target.value === 'none') {
-    scaleBar.style.display = 'none';
-  } else if (evt.target.value !== currentFilter) {
-    scaleBar.style.display = 'block';
-  }
-  changeFilter(evt);
+  var filterType = evt.target.value;
+  changeFilter(filterType);
 };
 
 // При переключении фильтра применяет его к превью фотографии
@@ -371,7 +356,7 @@ scaleLine.style.cursor = 'pointer';
 scaleLine.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
 
-  // перемещает пин на место нажатия мышкой
+  // Перемещает пин на место нажатия мышкой
   if (evt.target === scaleLine || evt.target === scaleLevel) {
     scalePin.style.left = (evt.offsetX / scaleLine.offsetWidth * 100) + '%';
     applyFilter(currentFilter);
@@ -386,14 +371,12 @@ scaleLine.addEventListener('mousedown', function (evt) {
 
     pinStartCoordinateX = moveEvt.clientX;
 
-    var scalePinLeft = ((scalePin.offsetLeft - shift) / scaleLine.offsetWidth * 100) + '%';
+    var scalePinLeft = ((scalePin.offsetLeft - shift) / scaleLine.offsetWidth * 100);
 
-    if (parseFloat(scalePinLeft, 10) < 0 || parseFloat(scalePinLeft, 10) > 100) {
-      return;
-    } else {
-      scalePin.style.left = scalePinLeft;
+    if (scalePinLeft > 0 || scalePinLeft < 100) {
+      scalePin.style.left = scalePinLeft + '%';
+      applyFilter(currentFilter);
     }
-    applyFilter(currentFilter);
   };
 
   var onPinMouseUp = function (upEvt) {
