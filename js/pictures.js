@@ -1,13 +1,6 @@
 'use strict';
 
 var ESC_KEYCODE = 27;
-var QUANTITY_URLS = 25;
-var MIN_QUANTITY_COMMENTS = 1;
-var MAX_QUANTITY_COMMENTS = 2;
-var MIN_LIKES = 15;
-var MAX_LIKES = 200;
-var template = document.querySelector('#picture').content;
-var picturesContainer = document.querySelector('.pictures');
 var bigPicture = document.querySelector('.big-picture');
 var commentsCount = bigPicture.querySelector('.social__comment-count');
 var commentLoad = bigPicture.querySelector('.social__loadmore');
@@ -15,79 +8,9 @@ var uploadFile = document.querySelector('#upload-file');
 var editImageForm = document.querySelector('.img-upload__overlay');
 var editImageFormClose = document.querySelector('#upload-cancel');
 var bigPictureClose = bigPicture.querySelector('.big-picture__cancel');
+var template = document.querySelector('#picture').content;
+var picturesContainer = document.querySelector('.pictures');
 var fragment = document.createDocumentFragment();
-var comments = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-];
-var descriptions = [
-  'Тестим новую камеру!',
-  'Затусили с друзьями на море',
-  'Как же круто тут кормят',
-  'Отдыхаем...',
-  'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
-  'Вот это тачка!'
-];
-
-// Получаем массив из чисел для интеграции в ссылки
-var getNumbersArray = function (length) {
-  var numbers = [];
-  for (var i = 0; i < length; i++) {
-    numbers[i] = i + 1;
-  }
-  return numbers;
-};
-// Создаем переменную с полученным массивом
-var urls = getNumbersArray(QUANTITY_URLS);
-
-// Получаем рандомное число в нужном диапазоне
-var getRandomNumber = function (min, max) {
-  var number = 0;
-  number = Math.floor(Math.random() * (max + 1 - min) + min);
-  return number;
-};
-
-// Перетасовываем массив
-var getShuffleArray = function (array) {
-  for (var i = array.length - 1; i > 0; i--) {
-    var j = getRandomNumber(0, i);
-    var temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  }
-  return array;
-};
-
-// Получаем массив с созданными объектами
-var getPhotoInfoArray = function (urlsArray, commentsArray, descriptionsArray) {
-  var photoParametersTemp = [];
-  urlsArray = getShuffleArray(urlsArray);
-  commentsArray = getShuffleArray(commentsArray);
-  for (var i = 0; i < urlsArray.length; i++) {
-    var urlTemp = 'photos/' + urlsArray[i] + '.jpg';
-    var likesTemp = getRandomNumber(MIN_LIKES, MAX_LIKES);
-    var commentsTemp = [];
-    // Рандомим количество комментов
-    for (var j = 0; j < getRandomNumber(MIN_QUANTITY_COMMENTS, MAX_QUANTITY_COMMENTS); j++) {
-      commentsTemp[j] = commentsArray[j];
-    }
-    var descriptionTemp = descriptionsArray[getRandomNumber(0, descriptionsArray.length - 1)];
-    photoParametersTemp[i] =
-      {
-        url: urlTemp,
-        likes: likesTemp,
-        comments: commentsTemp,
-        description: descriptionTemp
-      };
-  }
-  return photoParametersTemp;
-};
-// Создаем переменную с полученным массивом
-var photoParameters = getPhotoInfoArray(urls, comments, descriptions);
 
 // Собираем информацию одной карточки
 var createCard = function (cardsInfo) {
@@ -100,8 +23,8 @@ var createCard = function (cardsInfo) {
 
 // Вставляем в фрагмент все карточки
 var insetCards = function () {
-  for (var i = 0; i < photoParameters.length; i++) {
-    fragment.appendChild(createCard(photoParameters[i]));
+  for (var i = 0; i < window.data.photoParameters.length; i++) {
+    fragment.appendChild(createCard(window.data.photoParameters[i]));
   }
 };
 insetCards();
@@ -115,7 +38,7 @@ var renderСomments = function (object) {
   for (var j = 0; j < object.comments.length; j++) {
     var commentExample = bigPicture.querySelector('.social__comment').cloneNode(true);
     commentExample.classList.add('social__comment--text');
-    commentExample.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + getRandomNumber(1, 6) + '.svg');
+    commentExample.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + window.utils.getRandomNumber(1, 6) + '.svg');
     commentExample.querySelector('.social__text').textContent = object.comments[j];
     fragmentcomments.appendChild(commentExample);
   }
@@ -137,7 +60,7 @@ var createBigCard = function (object) {
   bigPicture.querySelector('.social__caption').textContent = object.description;
 };
 
-createBigCard(photoParameters[0]);
+createBigCard(window.data.photoParameters[0]);
 commentsCount.classList.add('visually-hidden');
 commentLoad.classList.add('visually-hidden');
 
