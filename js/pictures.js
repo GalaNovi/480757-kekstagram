@@ -193,7 +193,7 @@ var getLevelFilter = function (filter) {
 // Передает положение пина для вычисления уровня насыщенности
 // Линия уровня меняется в зависимости от положения пина
 var changeScaleValue = function () {
-  scaleValue.value = parseFloat(scalePin.style.left, 10);
+  scaleValue.value = Math.round(parseFloat(scalePin.style.left, 10));
   scaleLevel.style.width = scalePin.style.left;
 };
 
@@ -280,10 +280,10 @@ scaleLine.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
 
   // Перемещает пин на место нажатия мышкой
-  if (evt.target === scaleLine || evt.target === scaleLevel) {
-    scalePin.style.left = (evt.offsetX / scaleLine.offsetWidth * 100) + '%';
-    applyFilter(currentFilter);
-  }
+  // if (evt.target === scaleLine || evt.target === scaleLevel) {
+  //   scalePin.style.left = (evt.offsetX / scaleLine.offsetWidth * 100) + '%';
+  //   applyFilter(currentFilter);
+  // }
 
   var pinStartCoordinateX = evt.clientX;
 
@@ -295,8 +295,9 @@ scaleLine.addEventListener('mousedown', function (evt) {
     pinStartCoordinateX = moveEvt.clientX;
 
     var scalePinLeft = ((scalePin.offsetLeft - shift) / scaleLine.offsetWidth * 100);
+    console.log(scalePinLeft);
 
-    if (scalePinLeft > 0 || scalePinLeft < 100) {
+    if (scalePinLeft > 0 && scalePinLeft < 100) {
       scalePin.style.left = scalePinLeft + '%';
       applyFilter(currentFilter);
     }
