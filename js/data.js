@@ -42,6 +42,7 @@
       var urlTemp = 'photos/' + urlsArray[i] + '.jpg';
       var likesTemp = window.utils.getRandomNumber(MIN_LIKES, MAX_LIKES);
       var commentsTemp = [];
+      commentsArray = window.utils.getShuffleArray(commentsArray);
       // Рандомим количество комментов
       for (var j = 0; j < window.utils.getRandomNumber(MIN_QUANTITY_COMMENTS, MAX_QUANTITY_COMMENTS); j++) {
         commentsTemp[j] = commentsArray[j];
@@ -59,7 +60,6 @@
   };
 
   window.data = {
-    // Переменная с массивом данных фотографий
     photoParameters: getPhotoInfoArray(urls, comments, descriptions)
   };
 })();

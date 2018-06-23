@@ -2,8 +2,6 @@
 
 (function () {
   var template = document.querySelector('#picture').content;
-  var picturesContainer = document.querySelector('.pictures');
-  var fragment = document.createDocumentFragment();
 
   // Собираем информацию одной карточки
   var createCard = function (cardsInfo) {
@@ -14,14 +12,7 @@
     return tempCard;
   };
 
-  // Вставляем в фрагмент все карточки
-  var insetCards = function () {
-    for (var i = 0; i < window.data.photoParameters.length; i++) {
-      fragment.appendChild(createCard(window.data.photoParameters[i]));
-    }
+  window.picture = {
+    create: createCard
   };
-  insetCards();
-
-  // Вставляем фрагмент в DOM
-  picturesContainer.appendChild(fragment);
 })();
