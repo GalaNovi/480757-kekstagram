@@ -72,6 +72,38 @@
   scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
   applyFilter(currentFilter);
 
+  // ========================== Масштабирование ================================
+
+  var RESIZE_STEP = 25;
+  var MAX_SIZE_VALUE = 100;
+  var resizeValue = editImageForm.querySelector('.resize__control--value');
+  var resizeMinusButton = editImageForm.querySelector('.resize__control--minus');
+  var resizePlusButton = editImageForm.querySelector('.resize__control--plus');
+
+  var setSize = function (resizeableElement, size) {
+    size = parseFloat(size) / 100;
+    resizeableElement.style.transform = 'scale(' + size + ')';
+  };
+
+  var onMinusButtonClick = function () {
+    var currentValue = parseFloat(resizeValue.value);
+    if (currentValue > RESIZE_STEP) {
+      resizeValue.value = (currentValue - RESIZE_STEP) + '%';
+    }
+    setSize(imagePreview, resizeValue.value);
+  };
+
+  var onPlusButtonClick = function () {
+    var currentValue = parseFloat(resizeValue.value);
+    if (currentValue + RESIZE_STEP <= MAX_SIZE_VALUE) {
+      resizeValue.value = (currentValue + RESIZE_STEP) + '%';
+    }
+    setSize(imagePreview, resizeValue.value);
+  };
+
+  resizeMinusButton.addEventListener('click', onMinusButtonClick);
+  resizePlusButton.addEventListener('click', onPlusButtonClick);
+
   // ========================= Перетаскивание слайдера ==========================
 
   var scaleLine = document.querySelector('.scale__line');
