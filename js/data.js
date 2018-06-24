@@ -22,6 +22,7 @@
     'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
     'Вот это тачка!'
   ];
+
   // Получаем массив из чисел для интеграции в ссылки
   var getNumbersArray = function (length) {
     var numbers = [];
@@ -59,7 +60,5 @@
     return photoParametersTemp;
   };
 
-  window.data = {
-    photoParameters: getPhotoInfoArray(urls, comments, descriptions)
-  };
+  window.data = getPhotoInfoArray(urls, comments, descriptions);
 })();

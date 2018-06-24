@@ -3,55 +3,62 @@
 (function () {
   // ======================= Применение фильтров ============================
   var SCALE_PIN_VALUE_DEFAULT = '100%';
-  var editImageForm = document.querySelector('.img-upload__overlay');
-  var imagePreview = editImageForm.querySelector('.img-upload__preview');
-  var scalePin = editImageForm.querySelector('.scale__pin');
-  var scaleLevel = editImageForm.querySelector('.scale__level');
-  var scaleValue = editImageForm.querySelector('.scale__value');
-  var currentFilter = editImageForm.querySelector('input[type="radio"]:checked').value;
-  var scaleBar = editImageForm.querySelector('.img-upload__scale');
+  var RESIZE_STEP = 25;
+  var MAX_SIZE_VALUE = 100;
+  var MIN_SIZE_VALUE = 25;
+  var editImageFormElement = document.querySelector('.img-upload__overlay');
+  var imagePreviewElement = editImageFormElement.querySelector('.img-upload__preview');
+  var scalePinElement = editImageFormElement.querySelector('.scale__pin');
+  var scaleLevelElement = editImageFormElement.querySelector('.scale__level');
+  var scaleValueElement = editImageFormElement.querySelector('.scale__value');
+  var currentFilter = editImageFormElement.querySelector('input[type="radio"]:checked').value;
+  var scaleBarElement = editImageFormElement.querySelector('.img-upload__scale');
+  var resizeValueElement = editImageFormElement.querySelector('.resize__control--value');
+  var resizeMinusButton = editImageFormElement.querySelector('.resize__control--minus');
+  var resizePlusButton = editImageFormElement.querySelector('.resize__control--plus');
+  var scaleLineElement = document.querySelector('.scale__line');
 
   // Определяет уровень применения нужного фильтра
   var getLevelFilter = function (filter) {
     var levelsFilters = {
       none: '',
-      chrome: 'grayscale(' + 1 / 100 * scaleValue.value + ')',
-      sepia: 'sepia(' + 1 / 100 * scaleValue.value + ')',
-      marvin: 'invert(' + scaleValue.value + '%)',
-      phobos: 'blur(' + 3 / 100 * scaleValue.value + 'px)',
-      heat: 'brightness(' + ((2 / 100 * scaleValue.value) + 1) + ')'
+      chrome: 'grayscale(' + 1 / 100 * scaleValueElement.value + ')',
+      sepia: 'sepia(' + 1 / 100 * scaleValueElement.value + ')',
+      marvin: 'invert(' + scaleValueElement.value + '%)',
+      phobos: 'blur(' + 3 / 100 * scaleValueElement.value + 'px)',
+      heat: 'brightness(' + ((2 / 100 * scaleValueElement.value) + 1) + ')'
     };
     return levelsFilters[filter];
   };
 
   // Передает положение пина для вычисления уровня насыщенности
   // Линия уровня меняется в зависимости от положения пина
-  var changeScaleValue = function () {
-    scaleValue.value = Math.round(parseFloat(scalePin.style.left, 10));
-    scaleLevel.style.width = scalePin.style.left;
+  var changescaleValueElement = function () {
+    scaleValueElement.value = parseInt(scalePinElement.style.left, 10);
+    scaleLevelElement.style.width = scalePinElement.style.left;
   };
 
   // Применяет фильтр
   var applyFilter = function (filter) {
-    changeScaleValue();
-    imagePreview.style.filter = getLevelFilter(filter);
+    changescaleValueElement();
+    imagePreviewElement.style.filter = getLevelFilter(filter);
   };
 
   // Прячет слайдер если фильтра нет. Если есть - показывает.
   var switchFilterPanel = function (filterType) {
     if (filterType === 'none') {
-      scaleBar.style.display = 'none';
+      scaleBarElement.style.display = 'none';
     } else if (filterType !== currentFilter) {
-      scaleBar.style.display = 'block';
+      scaleBarElement.style.display = 'block';
     }
   };
 
   // Меняет фильтр на выбранный
   var changeFilter = function (filterType) {
     switchFilterPanel(filterType);
-    scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
-    imagePreview.classList.remove('effects__preview--' + currentFilter);
-    imagePreview.classList.add('effects__preview--' + filterType);
+    scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
+    imagePreviewElement.classList.remove('effects__preview--' + currentFilter);
+    imagePreviewElement.classList.add('effects__preview--' + filterType);
     applyFilter(filterType);
     currentFilter = filterType;
   };
@@ -63,58 +70,50 @@
     changeFilter(filterType);
   };
 
-  // При переключении фильтра применяет его к превью фотографии
-  editImageForm.addEventListener('change', onFilterChange);
+  // Прописывает размер элемента в css
+  var applySize = function (size) {
+    size = parseFloat(size) / 100;
+    imagePreviewElement.style.transform = 'scale(' + size + ')';
+  };
+
+  // Меняет размер изображения
+  var resizeImage = function (step) {
+    var currentValue = parseFloat(resizeValueElement.value);
+    if (currentValue + step >= MIN_SIZE_VALUE && currentValue + step <= MAX_SIZE_VALUE) {
+      resizeValueElement.value = (currentValue + step) + '%';
+    }
+    applySize(resizeValueElement.value);
+  };
+
+  // Меняет стиль курсора при наведении на шкалу
+  scaleLineElement.style.cursor = 'pointer';
 
   // Применяем дефолтный фильтр при открытии страницы, ставим пин на
   // дефолтное значение и применяем соответствующий уровень фильтра
-  imagePreview.classList.add('effects__preview--' + currentFilter);
-  scalePin.style.left = SCALE_PIN_VALUE_DEFAULT;
+  imagePreviewElement.classList.add('effects__preview--' + currentFilter);
+  scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
   applyFilter(currentFilter);
 
-  // ========================== Масштабирование ================================
+  // При переключении фильтра применяет его к превью фотографии
+  editImageFormElement.addEventListener('change', onFilterChange);
 
-  var RESIZE_STEP = 25;
-  var MAX_SIZE_VALUE = 100;
-  var resizeValue = editImageForm.querySelector('.resize__control--value');
-  var resizeMinusButton = editImageForm.querySelector('.resize__control--minus');
-  var resizePlusButton = editImageForm.querySelector('.resize__control--plus');
+  // Обработчик для уменьшения изображения
+  resizeMinusButton.addEventListener('click', function () {
+    resizeImage(-RESIZE_STEP);
+  });
 
-  var setSize = function (resizeableElement, size) {
-    size = parseFloat(size) / 100;
-    resizeableElement.style.transform = 'scale(' + size + ')';
-  };
+  // Обработчик для увеличения изображения
+  resizePlusButton.addEventListener('click', function () {
+    resizeImage(RESIZE_STEP);
+  });
 
-  var onMinusButtonClick = function () {
-    var currentValue = parseFloat(resizeValue.value);
-    if (currentValue > RESIZE_STEP) {
-      resizeValue.value = (currentValue - RESIZE_STEP) + '%';
-    }
-    setSize(imagePreview, resizeValue.value);
-  };
-
-  var onPlusButtonClick = function () {
-    var currentValue = parseFloat(resizeValue.value);
-    if (currentValue + RESIZE_STEP <= MAX_SIZE_VALUE) {
-      resizeValue.value = (currentValue + RESIZE_STEP) + '%';
-    }
-    setSize(imagePreview, resizeValue.value);
-  };
-
-  resizeMinusButton.addEventListener('click', onMinusButtonClick);
-  resizePlusButton.addEventListener('click', onPlusButtonClick);
-
-  // ========================= Перетаскивание слайдера ==========================
-
-  var scaleLine = document.querySelector('.scale__line');
-  scaleLine.style.cursor = 'pointer';
-
-  scaleLine.addEventListener('mousedown', function (evt) {
+  // Обработчик перетаскивания пина
+  scaleLineElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
     // Перемещает пин на место нажатия мышкой
-    if (evt.target === scaleLine || evt.target === scaleLevel) {
-      scalePin.style.left = (evt.offsetX / scaleLine.offsetWidth * 100) + '%';
+    if (evt.target === scaleLineElement || evt.target === scaleLevelElement) {
+      scalePinElement.style.left = (evt.offsetX / scaleLineElement.offsetWidth * 100) + '%';
       applyFilter(currentFilter);
     }
 
@@ -127,10 +126,10 @@
 
       pinStartCoordinateX = moveEvt.clientX;
 
-      var scalePinLeft = ((scalePin.offsetLeft - shift) / scaleLine.offsetWidth * 100);
+      var scalePinElementLeft = ((scalePinElement.offsetLeft - shift) / scaleLineElement.offsetWidth * 100);
 
-      if (scalePinLeft > 0 && scalePinLeft < 100) {
-        scalePin.style.left = scalePinLeft + '%';
+      if (scalePinElementLeft > 0 && scalePinElementLeft < 100) {
+        scalePinElement.style.left = scalePinElementLeft + '%';
         applyFilter(currentFilter);
       }
     };
