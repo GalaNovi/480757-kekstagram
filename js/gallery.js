@@ -7,8 +7,11 @@
   var commentLoadElement = bigPictureElement.querySelector('.social__loadmore');
 
   // Вставляет миниатюры на страницу
-  var insertCards = function (cards) {
+  var successLoad = function (data) {
+    var cards = window.picture(data);
     picturesContainerElement.appendChild(cards);
+    var picturesElements = document.querySelectorAll('.picture__img');
+    addListenersForPictures(picturesElements, data);
   };
 
   // Навешивает обработчик клика на миниатюру
@@ -20,23 +23,14 @@
   };
 
   // Навешивает обработчик клика на все миниатюры
-  var addListenersForPictures = function (pictures) {
+  var addListenersForPictures = function (pictures, data) {
     for (var i = 0; i < pictures.length; i++) {
       var picture = pictures[i];
-      addClickListener(picture, window.data[i]);
+      addClickListener(picture, data[i]);
     }
   };
 
-  // Создаем фрагмент с миниатюрами
-  var cards = window.picture(window.data);
-
-  // Заполняем страницу миниатюрами
-  insertCards(cards);
-
-  // создаем массив картинок-ссылок
-  var picturesElements = document.querySelectorAll('.picture__img');
-
-  addListenersForPictures(picturesElements);
+  window.backend.getData(successLoad, window.message.errorLoad);
   commentsCountElement.classList.add('hidden');
   commentLoadElement.classList.add('hidden');
 })();
