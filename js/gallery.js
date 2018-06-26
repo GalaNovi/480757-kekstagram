@@ -1,36 +1,37 @@
 'use strict';
 
 (function () {
-  var picturesContainerElement = document.querySelector('.pictures');
+  var cardsContainerElement = document.querySelector('.pictures');
   var bigPictureElement = document.querySelector('.big-picture');
   var commentsCountElement = bigPictureElement.querySelector('.social__comment-count');
   var commentLoadElement = bigPictureElement.querySelector('.social__loadmore');
 
-  // Вставляет миниатюры на страницу
-  var successLoad = function (data) {
-    var cards = window.picture(data);
-    picturesContainerElement.appendChild(cards);
-    var picturesElements = document.querySelectorAll('.picture__img');
-    addListenersForPictures(picturesElements, data);
-  };
-
   // Навешивает обработчик клика на миниатюру
-  var addClickListener = function (linkPicture, data) {
-    linkPicture.addEventListener('click', function (evt) {
+  var addClickListener = function (card, data) {
+    card.addEventListener('click', function (evt) {
       evt.preventDefault();
-      window.preview(data);
+      window.showPreview(data);
     });
   };
 
-  // Навешивает обработчик клика на все миниатюры
-  var addListenersForPictures = function (pictures, data) {
-    for (var i = 0; i < pictures.length; i++) {
-      var picture = pictures[i];
-      addClickListener(picture, data[i]);
+  // Вставляем в фрагмент все карточки
+  var createCards = function (data) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < data.length; i++) {
+      var card = window.createPicture(data[i]);
+      addClickListener(card, data[i]);
+      fragment.appendChild(card);
     }
+    return fragment;
   };
 
-  window.backend.getData(successLoad, window.message.errorLoad);
+  // Вставляет миниатюры на страницу
+  var onSuccessLoad = function (data) {
+    var cards = createCards(data);
+    cardsContainerElement.appendChild(cards);
+  };
+
+  window.backend.getData(onSuccessLoad, window.message.onErrorLoad);
   commentsCountElement.classList.add('hidden');
   commentLoadElement.classList.add('hidden');
 })();

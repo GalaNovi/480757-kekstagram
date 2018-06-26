@@ -6,13 +6,15 @@
   var bigPictureCloseElement = bigPictureElement.querySelector('.big-picture__cancel');
 
   // Открывает просмотр фотографии и вешает на документ обработчик нажатия ESC
-  var openbigPictureElement = function () {
+  var openBigPictureElement = function () {
     bigPictureElement.classList.remove('hidden');
+    document.addEventListener('keydown', onBigPictureElementEscPress);
   };
 
   // Закрывает просмотр фотографии, удаляет значение поля выбора файла и обработчик нажатия ESC
-  var closebigPictureElement = function () {
+  var closeBigPictureElement = function () {
     bigPictureElement.classList.add('hidden');
+    document.removeEventListener('keydown', onBigPictureElementEscPress);
   };
 
   //  Создает фрагмент с комментариями
@@ -43,26 +45,22 @@
     bigPictureElement.querySelector('.social__caption').textContent = object.description;
   };
 
+  var showPreview = function (object) {
+    changeBigCard(object);
+    openBigPictureElement();
+  };
+
   // Закрывает просмотр фотографии при нажатии на ESC
-  var onbigPictureElementEscPress = function (evt) {
+  var onBigPictureElementEscPress = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      closebigPictureElement();
+      closeBigPictureElement();
     }
   };
 
   // Закрывает просмотр фотографии при нажатии на крестик
   bigPictureCloseElement.addEventListener('click', function () {
-    closebigPictureElement();
-    document.removeEventListener('keydown', onbigPictureElementEscPress);
+    closeBigPictureElement();
   });
 
-  // Открывает просмотр фотографии при клике на фото
-  document.addEventListener('click', function (evt) {
-    if (evt.target.classList.contains('picture__img')) {
-      openbigPictureElement();
-      document.addEventListener('keydown', onbigPictureElementEscPress);
-    }
-  });
-
-  window.preview = changeBigCard;
+  window.showPreview = showPreview;
 })();

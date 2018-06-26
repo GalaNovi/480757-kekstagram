@@ -1,16 +1,21 @@
 'use strict';
 
 (function () {
+  var GET_TIMEOUT = 5000;
+  var SEND_TIMEOUT = 10000;
+  var LOAD_SUCCESS = 200;
+  var FILE_TYPE_ERROR = 400;
+
   window.backend = {
     getData: function (onLoad, onError) {
       var URL = 'https://js.dump.academy/kekstagram/data';
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
-      xhr.timeout = 5000;
+      xhr.timeout = GET_TIMEOUT;
 
       xhr.addEventListener('load', function () {
         switch (xhr.status) {
-          case 200:
+          case LOAD_SUCCESS:
             onLoad(xhr.response);
             break;
           default:
@@ -33,14 +38,14 @@
     sendData: function (data, onLoad, onError) {
       var URL = 'https://js.dump.academy/kekstagram';
       var xhr = new XMLHttpRequest();
-      xhr.timeout = 10000;
+      xhr.timeout = SEND_TIMEOUT;
 
       xhr.addEventListener('load', function () {
         switch (xhr.status) {
-          case 200:
+          case LOAD_SUCCESS:
             onLoad();
             break;
-          case 400:
+          case FILE_TYPE_ERROR:
             onError('Отправлять можно только изображение!');
             break;
           default:

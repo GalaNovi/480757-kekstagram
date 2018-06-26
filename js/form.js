@@ -94,7 +94,7 @@
   // Функция успешной отправки сообщения
   var onSuccess = function () {
     closeEditImageElement();
-    window.message.successLoad('Информация успешно отправлена!');
+    window.message.onSuccessLoad('Информация успешно отправлена!');
   };
 
   // При загрузке файла открывается форма для его редактирования

@@ -30,11 +30,11 @@
   };
 
   window.message = {
-    errorLoad: function (text) {
+    onErrorLoad: function (text) {
       message(text, ERROR_COLOR);
     },
 
-    successLoad: function (text) {
+    onSuccessLoad: function (text) {
       message(text, SUCCESS_COLOR);
     }
   };
