@@ -1,42 +1,37 @@
 'use strict';
 
 (function () {
-  var picturesContainerElement = document.querySelector('.pictures');
+  var cardsContainerElement = document.querySelector('.pictures');
   var bigPictureElement = document.querySelector('.big-picture');
   var commentsCountElement = bigPictureElement.querySelector('.social__comment-count');
   var commentLoadElement = bigPictureElement.querySelector('.social__loadmore');
 
-  // Вставляет миниатюры на страницу
-  var insertCards = function (cards) {
-    picturesContainerElement.appendChild(cards);
-  };
-
   // Навешивает обработчик клика на миниатюру
-  var addClickListener = function (linkPicture, data) {
-    linkPicture.addEventListener('click', function (evt) {
+  var addClickListener = function (card, data) {
+    card.addEventListener('click', function (evt) {
       evt.preventDefault();
-      window.preview(data);
+      window.showPreview(data);
     });
   };
 
-  // Навешивает обработчик клика на все миниатюры
-  var addListenersForPictures = function (pictures) {
-    for (var i = 0; i < pictures.length; i++) {
-      var picture = pictures[i];
-      addClickListener(picture, window.data[i]);
+  // Вставляем в фрагмент все карточки
+  var createCards = function (data) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < data.length; i++) {
+      var card = window.createPicture(data[i]);
+      addClickListener(card, data[i]);
+      fragment.appendChild(card);
     }
+    return fragment;
   };
 
-  // Создаем фрагмент с миниатюрами
-  var cards = window.picture(window.data);
+  // Вставляет миниатюры на страницу
+  var onSuccessLoad = function (data) {
+    var cards = createCards(data);
+    cardsContainerElement.appendChild(cards);
+  };
 
-  // Заполняем страницу миниатюрами
-  insertCards(cards);
-
-  // создаем массив картинок-ссылок
-  var picturesElements = document.querySelectorAll('.picture__img');
-
-  addListenersForPictures(picturesElements);
+  window.backend.getData(onSuccessLoad, window.message.onErrorLoad);
   commentsCountElement.classList.add('hidden');
   commentLoadElement.classList.add('hidden');
 })();

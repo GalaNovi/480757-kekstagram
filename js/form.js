@@ -10,6 +10,7 @@
   var editImageCloseElement = document.querySelector('#upload-cancel');
   var descriptionFieldElement = document.querySelector('.text__description');
   var hashtagsFieldElement = document.querySelector('.text__hashtags');
+  var form = document.querySelector('.img-upload__form');
 
   // Открывает попап и вешает на документ обработчик нажатия ESC
   var openEditImageElement = function () {
@@ -90,6 +91,12 @@
     }
   };
 
+  // Функция успешной отправки сообщения
+  var onSuccess = function () {
+    closeEditImageElement();
+    window.message.onSuccessLoad('Информация успешно отправлена!');
+  };
+
   // При загрузке файла открывается форма для его редактирования
   uploadFileElement.addEventListener('change', function () {
     openEditImageElement();
@@ -104,4 +111,10 @@
 
   // Обработчик правильности написания хештегов
   hashtagsFieldElement.addEventListener('input', onInputChange);
+
+  // Обработчик при отправке формы
+  form.addEventListener('submit', function (evt) {
+    window.backend.sendData(new FormData(form), onSuccess, window.message.errorLoad);
+    evt.preventDefault();
+  });
 })();
