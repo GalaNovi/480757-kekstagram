@@ -1,12 +1,14 @@
 'use strict';
 
 (function () {
+  var NEW_CARDS_QUANTITY = 10;
   var cardsContainerElement = document.querySelector('.pictures');
   var bigPictureElement = document.querySelector('.big-picture');
   var filtersElement = document.querySelector('.img-filters');
   var commentsCountElement = bigPictureElement.querySelector('.social__comment-count');
   var commentLoadElement = bigPictureElement.querySelector('.social__loadmore');
   var filterButtons = filtersElement.querySelectorAll('.img-filters__button');
+  var cardsData = [];
 
   // Ищет активный фильтр
   var getActiveFilter = function (filters) {
@@ -21,8 +23,34 @@
   };
   var activeFilter = getActiveFilter(filterButtons);
 
+  // Удаляет все миниатюры
+  var deleteCards = function () {
+    var cards = document.querySelectorAll('.picture__link');
+    for (var i = 0; i < cards.length; i++) {
+      cardsContainerElement.removeChild(cards[i]);
+    }
+  };
+
+  // Обновляет миниатюты
+  var updateCards = function (data) {
+    var cards = createCards(data);
+    deleteCards();
+    cardsContainerElement.appendChild(cards);
+  };
+
   // Переключает на выбранный фильтр
   var switchFilter = function (chosenFilter) {
+    switch (chosenFilter.id) {
+      case 'filter-popular':
+        updateCards(cardsData);
+        break;
+      case 'filter-new':
+        updateCards(window.sorting.new(cardsData, NEW_CARDS_QUANTITY));
+        break;
+      case 'filter-discussed':
+        updateCards(window.sorting.discussed(cardsData));
+        break;
+    }
     activeFilter.classList.remove('img-filters__button--active');
     chosenFilter.classList.add('img-filters__button--active');
     activeFilter = chosenFilter;
@@ -63,6 +91,7 @@
 
   // Вставляет миниатюры на страницу
   var onSuccessLoad = function (data) {
+    cardsData = data;
     var cards = createCards(data);
     cardsContainerElement.appendChild(cards);
     addListenersForFilterButtons();
