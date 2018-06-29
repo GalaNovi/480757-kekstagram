@@ -23,9 +23,12 @@
     uploadFileElement.value = '';
   };
 
-  // Получаем массив из хештегов
-  var getHashtags = function (valuehashtagsFieldElement) {
-    return valuehashtagsFieldElement.split(' ');
+  // Получаем массив из хештегов, удаляет лишние пробелы
+  var getHashtags = function (hashtagsFieldElementValue) {
+    var hashtags = hashtagsFieldElementValue.split(' ');
+    return hashtags.filter(function (hashtag) {
+      return hashtag !== '';
+    });
   };
 
   // Проверяет количество хештегов
