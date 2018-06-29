@@ -28,7 +28,7 @@
       });
 
       xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + 'с');
+        onError('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + ' секунд');
       });
 
       xhr.open('GET', URL);
@@ -58,7 +58,7 @@
       });
 
       xhr.addEventListener('timeout', function () {
-        onError('Данные не успели отправиться за ' + (xhr.timeout / 1000) + 'с');
+        onError('Данные не успели отправиться за ' + (xhr.timeout / 1000) + ' секунд');
       });
 
       xhr.open('POST', URL);
