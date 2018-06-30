@@ -73,7 +73,6 @@
   var onPopupEscPress = function (evt) {
     var isFieldActive = document.activeElement === hashtagsFieldElement || document.activeElement === descriptionFieldElement;
     if (evt.keyCode === ESC_KEYCODE && !isFieldActive) {
-      console.log('ESC');
       closeEditImageElement();
       document.removeEventListener('keydown', onPopupEscPress);
     }
@@ -81,7 +80,6 @@
 
   // Закрывает попап при нажатии на крестик
   var onCrossClick = function () {
-    console.log('Cross');
     closeEditImageElement();
   };
 
