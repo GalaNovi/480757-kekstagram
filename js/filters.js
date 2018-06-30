@@ -33,14 +33,14 @@
 
   // Передает положение пина для вычисления уровня насыщенности
   // Линия уровня меняется в зависимости от положения пина
-  var changescaleValueElement = function () {
+  var changeScaleValueElement = function () {
     scaleValueElement.value = parseInt(scalePinElement.style.left, 10);
     scaleLevelElement.style.width = scalePinElement.style.left;
   };
 
   // Применяет фильтр
   var applyFilter = function (filter) {
-    changescaleValueElement();
+    changeScaleValueElement();
     imagePreviewElement.style.filter = getLevelFilter(filter);
   };
 
