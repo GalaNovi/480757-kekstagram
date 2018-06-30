@@ -17,6 +17,7 @@
   var resizeMinusButton = editImageFormElement.querySelector('.resize__control--minus');
   var resizePlusButton = editImageFormElement.querySelector('.resize__control--plus');
   var scaleLineElement = document.querySelector('.scale__line');
+  var effectsListElement = editImageFormElement.querySelector('.effects__list');
 
   // Определяет уровень применения нужного фильтра
   var getLevelFilter = function (filter) {
@@ -95,7 +96,7 @@
   applyFilter(currentFilter);
 
   // При переключении фильтра применяет его к превью фотографии
-  editImageFormElement.addEventListener('change', onFilterChange);
+  effectsListElement.addEventListener('change', onFilterChange);
 
   // Обработчик для уменьшения изображения
   resizeMinusButton.addEventListener('click', function () {
