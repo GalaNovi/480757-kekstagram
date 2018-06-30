@@ -11,12 +11,14 @@
   var openBigPictureElement = function () {
     bigPictureElement.classList.remove('hidden');
     document.addEventListener('keydown', onBigPictureElementEscPress);
+    bigPictureCloseElement.addEventListener('click', onCrossClick);
   };
 
   // Закрывает просмотр фотографии, удаляет значение поля выбора файла и обработчик нажатия ESC
   var closeBigPictureElement = function () {
     bigPictureElement.classList.add('hidden');
     document.removeEventListener('keydown', onBigPictureElementEscPress);
+    bigPictureCloseElement.removeEventListener('click', onCrossClick);
   };
 
   //  Создает фрагмент с комментариями
@@ -85,9 +87,9 @@
   };
 
   // Закрывает просмотр фотографии при нажатии на крестик
-  bigPictureCloseElement.addEventListener('click', function () {
+  var onCrossClick = function () {
     closeBigPictureElement();
-  });
+  };
 
   window.showPreview = showPreview;
 })();

@@ -15,12 +15,14 @@
   // Открывает попап и вешает на документ обработчик нажатия ESC
   var openEditImageElement = function () {
     editImageElement.classList.remove('hidden');
+    editImageCloseElement.addEventListener('click', onCrossClick);
   };
 
   // Закрывает попап, удаляет значение поля выбора файла и обработчик нажатия ESC
   var closeEditImageElement = function () {
     editImageElement.classList.add('hidden');
     uploadFileElement.value = '';
+    editImageCloseElement.removeEventListener('click', onCrossClick);
   };
 
   // Получаем массив из хештегов, удаляет лишние пробелы
@@ -71,9 +73,16 @@
   var onPopupEscPress = function (evt) {
     var isFieldActive = document.activeElement === hashtagsFieldElement || document.activeElement === descriptionFieldElement;
     if (evt.keyCode === ESC_KEYCODE && !isFieldActive) {
+      console.log('ESC');
       closeEditImageElement();
       document.removeEventListener('keydown', onPopupEscPress);
     }
+  };
+
+  // Закрывает попап при нажатии на крестик
+  var onCrossClick = function () {
+    console.log('Cross');
+    closeEditImageElement();
   };
 
   // Проверяет правильность написания и добавляет соответствующий текст ошибки.
@@ -104,12 +113,6 @@
   uploadFileElement.addEventListener('change', function () {
     openEditImageElement();
     document.addEventListener('keydown', onPopupEscPress);
-  });
-
-  // Закрывает попап при нажатии на крестик
-  editImageCloseElement.addEventListener('click', function () {
-    closeEditImageElement();
-    document.removeEventListener('keydown', onPopupEscPress);
   });
 
   // Обработчик правильности написания хештегов
