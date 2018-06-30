@@ -11,13 +11,10 @@
     discussed: function (data) {
       var tempData = data.slice();
       tempData.sort(function (left, right) {
-        if (left.comments.length < right.comments.length) {
-          return 1;
+        if (left.comments.length === right.comments.length) {
+          return 0;
         }
-        if (left.comments.length > right.comments.length) {
-          return -1;
-        }
-        return 0;
+        return left.comments.length < right.comments.length ? 1 : -1;
       });
       return tempData;
     }
