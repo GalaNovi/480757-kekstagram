@@ -3,10 +3,7 @@
 (function () {
   var NEW_CARDS_QUANTITY = 10;
   var cardsContainerElement = document.querySelector('.pictures');
-  var bigPictureElement = document.querySelector('.big-picture');
   var filtersElement = document.querySelector('.img-filters');
-  var commentsCountElement = bigPictureElement.querySelector('.social__comment-count');
-  var commentLoadElement = bigPictureElement.querySelector('.social__loadmore');
   var filterButtons = filtersElement.querySelectorAll('.img-filters__button');
   var cardsData = [];
 
@@ -99,6 +96,4 @@
   };
 
   window.backend.getData(onSuccessLoad, window.message.onErrorLoad);
-  commentsCountElement.classList.add('hidden');
-  commentLoadElement.classList.add('hidden');
 })();
