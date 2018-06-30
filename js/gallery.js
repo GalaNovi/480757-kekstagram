@@ -57,8 +57,8 @@
   // Вставляет миниатюры на страницу
   var onSuccessLoad = function (data) {
     cardsData = data;
-    var cards = createCards(data);
-    cardsContainerElement.appendChild(cards);
+    renderCards(cardsData);
+    window.filtersEnable(updateCards);
   };
 
   window.backend.getData(onSuccessLoad, window.message.errorText);

@@ -1,8 +1,9 @@
 'use strict';
 
 (function () {
-  var filterButtons = Array.from(filtersElement.querySelectorAll('.img-filters__button'));
   var filtersElement = document.querySelector('.img-filters');
+  var filterButtons = Array.from(filtersElement.querySelectorAll('.img-filters__button'));
+  var filterButtonClickCollback = null;
 
   // Ищет активный фильтр
   var getActiveFilter = function (filters) {
@@ -18,7 +19,7 @@
       activeFilterButton.classList.remove('img-filters__button--active');
       filterButton.classList.add('img-filters__button--active');
       activeFilterButton = filterButton;
-      updateCards(filterButton);
+      filterButtonClickCollback(filterButton);
     });
   };
 
@@ -30,6 +31,7 @@
   };
 
   window.filtersEnable = function (callback) {
+    filterButtonClickCollback = callback;
     addListenersForFilterButtons();
     filtersElement.classList.remove('img-filters--inactive');
   };
