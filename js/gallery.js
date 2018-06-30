@@ -3,17 +3,7 @@
 (function () {
   var NEW_CARDS_QUANTITY = 10;
   var cardsContainerElement = document.querySelector('.pictures');
-  var filtersElement = document.querySelector('.img-filters');
-  var filterButtons = Array.from(filtersElement.querySelectorAll('.img-filters__button'));
   var cardsData = [];
-
-  // Ищет активный фильтр
-  var getActiveFilter = function (filters) {
-    return filters.find(function (element) {
-      return element.classList.contains('img-filters__button--active');
-    });
-  };
-  var activeFilter = getActiveFilter(filterButtons);
 
   // Удаляет все миниатюры
   var deleteCards = function () {
@@ -23,42 +13,25 @@
     }
   };
 
-  // Обновляет миниатюты
-  var updateCards = function (data) {
+  // Отрисовывает миниатюты
+  var renderCards = function (data) {
     var cards = createCards(data);
     deleteCards();
     cardsContainerElement.appendChild(cards);
   };
 
-  // Переключает на выбранный фильтр
-  var switchFilter = function (chosenFilter) {
-    switch (chosenFilter.id) {
+  // Отфильтровывает миниатюры
+  var updateCards = function (filterButton) {
+    switch (filterButton.id) {
       case 'filter-popular':
-        updateCards(cardsData);
+        renderCards(cardsData);
         break;
       case 'filter-new':
-        updateCards(window.sorting.new(cardsData, NEW_CARDS_QUANTITY));
+        renderCards(window.sorting.new(cardsData, NEW_CARDS_QUANTITY));
         break;
       case 'filter-discussed':
-        updateCards(window.sorting.discussed(cardsData));
+        renderCards(window.sorting.discussed(cardsData));
         break;
-    }
-    activeFilter.classList.remove('img-filters__button--active');
-    chosenFilter.classList.add('img-filters__button--active');
-    activeFilter = chosenFilter;
-  };
-
-  // Вешает обработкик клика на одну кнопку фильтра
-  var filterButtonAddListener = function (button) {
-    button.addEventListener('click', function () {
-      switchFilter(button);
-    });
-  };
-
-  // Вешает обработкик клика на все кнопки фильтра
-  var addListenersForFilterButtons = function () {
-    for (var i = 0; i < filterButtons.length; i++) {
-      filterButtonAddListener(filterButtons[i]);
     }
   };
 
@@ -86,8 +59,6 @@
     cardsData = data;
     var cards = createCards(data);
     cardsContainerElement.appendChild(cards);
-    addListenersForFilterButtons();
-    filtersElement.classList.remove('img-filters--inactive');
   };
 
   window.backend.getData(onSuccessLoad, window.message.errorText);
