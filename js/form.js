@@ -97,7 +97,7 @@
   // Функция успешной отправки сообщения
   var onSuccess = function () {
     closeEditImageElement();
-    window.message.onSuccessLoad('Информация успешно отправлена!');
+    window.message.text('Информация успешно отправлена!');
   };
 
   // При загрузке файла открывается форма для его редактирования
@@ -117,7 +117,7 @@
 
   // Обработчик при отправке формы
   form.addEventListener('submit', function (evt) {
-    window.backend.sendData(new FormData(form), onSuccess, window.message.errorLoad);
+    window.backend.sendData(new FormData(form), onSuccess, window.message.errorText);
     evt.preventDefault();
   });
 })();

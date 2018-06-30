@@ -95,5 +95,5 @@
     filtersElement.classList.remove('img-filters--inactive');
   };
 
-  window.backend.getData(onSuccessLoad, window.message.onErrorLoad);
+  window.backend.getData(onSuccessLoad, window.message.errorText);
 })();
