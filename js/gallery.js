@@ -4,19 +4,14 @@
   var NEW_CARDS_QUANTITY = 10;
   var cardsContainerElement = document.querySelector('.pictures');
   var filtersElement = document.querySelector('.img-filters');
-  var filterButtons = filtersElement.querySelectorAll('.img-filters__button');
+  var filterButtons = Array.from(filtersElement.querySelectorAll('.img-filters__button'));
   var cardsData = [];
 
   // Ищет активный фильтр
   var getActiveFilter = function (filters) {
-    var activefilter;
-    for (var i = 0; i < filters.length; i++) {
-      if (filters[i].classList.contains('img-filters__button--active')) {
-        activefilter = filters[i];
-        break;
-      }
-    }
-    return activefilter;
+    return filters.find(function (element) {
+      return element.classList.contains('img-filters__button--active');
+    });
   };
   var activeFilter = getActiveFilter(filterButtons);
 
