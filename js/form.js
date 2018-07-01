@@ -23,6 +23,8 @@
     editImageElement.classList.add('hidden');
     uploadFileElement.value = '';
     editImageCloseElement.removeEventListener('click', onCrossClick);
+    form.reset();
+    window.resetEffects();
   };
 
   // Получаем массив из хештегов, удаляет лишние пробелы

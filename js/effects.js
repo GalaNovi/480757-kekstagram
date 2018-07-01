@@ -14,6 +14,7 @@
   var scaleValueElement = scaleBarElement.querySelector('.scale__value');
   var scaleLineElement = scaleBarElement.querySelector('.scale__line');
   var defaultEffect = editImageFormElement.querySelector('input[type="radio"]:checked').value;
+  var currentEffect = defaultEffect;
   var resizeValueElement = editImageFormElement.querySelector('.resize__control--value');
   var resizeMinusButton = editImageFormElement.querySelector('.resize__control--minus');
   var resizePlusButton = editImageFormElement.querySelector('.resize__control--plus');
@@ -58,10 +59,10 @@
   var changeEffect = function (effectType) {
     switchEffectPanel(effectType);
     scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
-    imagePreviewElement.classList.remove('effects__preview--' + defaultEffect);
+    imagePreviewElement.classList.remove('effects__preview--' + currentEffect);
     imagePreviewElement.classList.add('effects__preview--' + effectType);
     applyEffect(effectType);
-    defaultEffect = effectType;
+    currentEffect = effectType;
   };
 
   // Прописывает размер элемента в css
@@ -80,9 +81,10 @@
   };
 
   // Задает стандартные фильтр
-  var setDefaultFilter = function () {
+  var setDefaultEffect = function () {
     imagePreviewElement.classList.add('effects__preview--' + defaultEffect);
     scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
+    imagePreviewElement.style.transform = '';
     applyEffect(defaultEffect);
   };
 
@@ -112,7 +114,7 @@
     // Перемещает пин на место нажатия мышкой
     if (evt.target === scaleLineElement || evt.target === scaleLevelElement) {
       scalePinElement.style.left = (evt.offsetX / scaleLineElement.offsetWidth * 100) + '%';
-      applyEffect(defaultEffect);
+      applyEffect(currentEffect);
     }
 
     var pinStartCoordinateX = evt.clientX;
@@ -128,7 +130,7 @@
 
       if (scalePinElementLeft > 0 && scalePinElementLeft < 100) {
         scalePinElement.style.left = scalePinElementLeft + '%';
-        applyEffect(defaultEffect);
+        applyEffect(currentEffect);
       }
     };
 
@@ -143,5 +145,7 @@
     document.addEventListener('mouseup', onPinMouseUp);
   });
 
-  setDefaultFilter();
+  setDefaultEffect();
+
+  window.resetEffects = setDefaultEffect;
 })();
