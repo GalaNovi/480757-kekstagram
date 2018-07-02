@@ -73,11 +73,16 @@
     }
   };
 
-  // Прячет кнопку загрузки комментарием, если их меньше показываемого количества
+  // Прячет кнопку загрузки комментарием, если все комментарии показаны
   var hideLoadCommentsButton = function () {
-    var commentsElements = bigPictureElement.querySelectorAll('.social__comment');
-    if (commentsElements.length <= SHOW_COMMENTS_QUANTITY) {
+    var commentsElements = Array.from(bigPictureElement.querySelectorAll('.social__comment'));
+    var allCommentsShown = !commentsElements.some(function (comment) {
+      return comment.style.display === 'none';
+    });
+    if (allCommentsShown) {
       loadCommentsButton.classList.add('hidden');
+    } else {
+      loadCommentsButton.classList.remove('hidden');
     }
   };
 
@@ -108,12 +113,13 @@
   // Обработчик для кнопки показа комментариев
   loadCommentsButton.addEventListener('click', function () {
     showNextComments();
+    hideLoadCommentsButton();
   });
 
   window.showPreview = function (object) {
     changeBigCard(object);
-    hideLoadCommentsButton();
     hideComments();
+    hideLoadCommentsButton();
     updateCommentsShowCount();
     openBigPictureElement();
   };
