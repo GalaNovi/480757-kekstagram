@@ -61,5 +61,9 @@
     window.filtersEnable(updateCards);
   };
 
-  window.backend.getData(onSuccessLoad, window.message.errorText);
+  var onErrorLoad = function (errorText) {
+    window.message.showError(errorText);
+  };
+
+  window.backend.getData(onSuccessLoad, onErrorLoad);
 })();

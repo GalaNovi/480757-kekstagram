@@ -4,7 +4,6 @@
   var GET_TIMEOUT = 5000;
   var SEND_TIMEOUT = 10000;
   var LOAD_SUCCESS = 200;
-  var FILE_TYPE_ERROR = 400;
 
   window.backend = {
     getData: function (onLoad, onError) {
@@ -44,9 +43,6 @@
         switch (xhr.status) {
           case LOAD_SUCCESS:
             onLoad();
-            break;
-          case FILE_TYPE_ERROR:
-            onError('Отправлять можно только изображение!');
             break;
           default:
             onError('Произошла ошибка ' + xhr.status + ' ' + xhr.statusText);

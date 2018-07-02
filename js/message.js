@@ -30,7 +30,7 @@
   };
 
   window.message = {
-    errorText: function (text) {
+    showError: function (text) {
       message(text, ERROR_COLOR);
     },
 
