@@ -48,7 +48,7 @@
     for (var i = 0; i < oldСomments; i++) {
       bigPictureElement.querySelector('.social__comments').removeChild(bigPictureElement.querySelector('.social__comment'));
     }
-    bigPictureElement.querySelector('.social__caption').textContent = object.description;
+    bigPictureElement.querySelector('.social__caption').textContent = object.description || '';
   };
 
   // Определяет сколько комментов показано и выводит это число на странице
