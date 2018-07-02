@@ -11,6 +11,9 @@
   var descriptionFieldElement = document.querySelector('.text__description');
   var hashtagsFieldElement = document.querySelector('.text__hashtags');
   var form = document.querySelector('.img-upload__form');
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var fileChooser = document.querySelector('.img-upload__input');
+  var preview = document.querySelector('.img-upload__preview-image');
 
   // Открывает попап и вешает на документ обработчик нажатия ESC
   var openEditImageElement = function () {
@@ -113,10 +116,26 @@
     window.message.showError(errorText);
   };
 
-  // При загрузке файла открывается форма для его редактирования
+  // Обработчик загрузки файла
   uploadFileElement.addEventListener('change', function () {
-    openEditImageElement();
-    document.addEventListener('keydown', onPopupEscPress);
+    var file = fileChooser.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+      reader.addEventListener('load', function () {
+        preview.src = reader.result;
+      });
+      reader.readAsDataURL(file);
+      openEditImageElement();
+      document.addEventListener('keydown', onPopupEscPress);
+    } else {
+      window.message.showError('Файл не является изображением');
+    }
   });
 
   // Обработчик правильности написания хештегов
