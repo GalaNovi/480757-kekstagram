@@ -93,15 +93,6 @@
     updateCommentsShowCount();
   };
 
-  // Изменяет и показываеет превью
-  var showPreview = function (object) {
-    changeBigCard(object);
-    hideLoadCommentsButton();
-    hideComments();
-    updateCommentsShowCount();
-    openBigPictureElement();
-  };
-
   // Закрывает просмотр фотографии при нажатии на ESC
   var onBigPictureElementEscPress = function (evt) {
     if (evt.keyCode === ESC_KEYCODE) {
@@ -119,5 +110,11 @@
     showNextComments();
   });
 
-  window.showPreview = showPreview;
+  window.showPreview = function (object) {
+    changeBigCard(object);
+    hideLoadCommentsButton();
+    hideComments();
+    updateCommentsShowCount();
+    openBigPictureElement();
+  };
 })();

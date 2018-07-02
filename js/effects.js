@@ -19,6 +19,7 @@
   var resizeMinusButton = editImageFormElement.querySelector('.resize__control--minus');
   var resizePlusButton = editImageFormElement.querySelector('.resize__control--plus');
   var effectsListElement = editImageFormElement.querySelector('.effects__list');
+  var preview = document.querySelector('.img-upload__preview-image');
 
   // Определяет уровень применения нужного фильтра
   var getLevelEffect = function (effect) {
@@ -82,10 +83,13 @@
 
   // Задает стандартные фильтр
   var setDefaultEffect = function () {
+    imagePreviewElement.classList.remove('effects__preview--' + currentEffect);
     imagePreviewElement.classList.add('effects__preview--' + defaultEffect);
+    currentEffect = defaultEffect;
     scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
     imagePreviewElement.style.transform = '';
     applyEffect(defaultEffect);
+    preview.src = '#';
   };
 
   // Функция смены фильта
