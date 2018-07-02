@@ -5,13 +5,13 @@
   var MIN_HASHTAG_LENGTH = 4;
   var HASHTAGS_QUANTITY = 5;
   var ESC_KEYCODE = 27;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var uploadFileElement = document.querySelector('#upload-file');
   var editImageElement = document.querySelector('.img-upload__overlay');
   var editImageCloseElement = document.querySelector('#upload-cancel');
   var descriptionFieldElement = document.querySelector('.text__description');
   var hashtagsFieldElement = document.querySelector('.text__hashtags');
   var form = document.querySelector('.img-upload__form');
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var fileChooser = document.querySelector('.img-upload__input');
   var preview = document.querySelector('.img-upload__preview-image');
 

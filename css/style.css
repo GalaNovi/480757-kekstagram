@@ -631,11 +631,11 @@ main {
   height: 600px;
 
   background-color: #ffffff;
+  overflow: hidden;
 }
 
 .img-upload__preview img {
   display: block;
-  max-width: 600px;
   max-height: 600px;
 }
 
