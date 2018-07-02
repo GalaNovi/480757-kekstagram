@@ -631,11 +631,11 @@ main {
   height: 600px;
 
   background-color: #ffffff;
+  overflow: hidden;
 }
 
 .img-upload__preview img {
   display: block;
-  max-width: 600px;
   max-height: 600px;
 }
 
@@ -683,6 +683,8 @@ main {
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
           transform: translateY(-50%);
+
+  cursor: pointer;
 }
 
 .scale__pin {

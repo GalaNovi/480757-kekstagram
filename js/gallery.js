@@ -1,10 +1,39 @@
 'use strict';
 
 (function () {
+  var NEW_CARDS_QUANTITY = 10;
   var cardsContainerElement = document.querySelector('.pictures');
-  var bigPictureElement = document.querySelector('.big-picture');
-  var commentsCountElement = bigPictureElement.querySelector('.social__comment-count');
-  var commentLoadElement = bigPictureElement.querySelector('.social__loadmore');
+  var cardsData = [];
+
+  // Удаляет все миниатюры
+  var deleteCards = function () {
+    var cards = document.querySelectorAll('.picture__link');
+    for (var i = 0; i < cards.length; i++) {
+      cardsContainerElement.removeChild(cards[i]);
+    }
+  };
+
+  // Отрисовывает миниатюты
+  var renderCards = function (data) {
+    var cards = createCards(data);
+    deleteCards();
+    cardsContainerElement.appendChild(cards);
+  };
+
+  // Отфильтровывает миниатюры
+  var updateCards = function (filterButton) {
+    switch (filterButton.id) {
+      case 'filter-popular':
+        renderCards(cardsData);
+        break;
+      case 'filter-new':
+        renderCards(window.sorting.new(cardsData, NEW_CARDS_QUANTITY));
+        break;
+      case 'filter-discussed':
+        renderCards(window.sorting.discussed(cardsData));
+        break;
+    }
+  };
 
   // Навешивает обработчик клика на миниатюру
   var addClickListener = function (card, data) {
@@ -27,11 +56,14 @@
 
   // Вставляет миниатюры на страницу
   var onSuccessLoad = function (data) {
-    var cards = createCards(data);
-    cardsContainerElement.appendChild(cards);
+    cardsData = data;
+    renderCards(cardsData);
+    window.filtersEnable(updateCards);
   };
 
-  window.backend.getData(onSuccessLoad, window.message.onErrorLoad);
-  commentsCountElement.classList.add('hidden');
-  commentLoadElement.classList.add('hidden');
+  var onErrorLoad = function (errorText) {
+    window.message.showError(errorText);
+  };
+
+  window.backend.getData(onSuccessLoad, onErrorLoad);
 })();

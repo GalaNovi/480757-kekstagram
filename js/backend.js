@@ -4,7 +4,6 @@
   var GET_TIMEOUT = 5000;
   var SEND_TIMEOUT = 10000;
   var LOAD_SUCCESS = 200;
-  var FILE_TYPE_ERROR = 400;
 
   window.backend = {
     getData: function (onLoad, onError) {
@@ -28,7 +27,7 @@
       });
 
       xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + 'с');
+        onError('Запрос не успел выполниться за ' + (xhr.timeout / 1000) + ' секунд');
       });
 
       xhr.open('GET', URL);
@@ -45,9 +44,6 @@
           case LOAD_SUCCESS:
             onLoad();
             break;
-          case FILE_TYPE_ERROR:
-            onError('Отправлять можно только изображение!');
-            break;
           default:
             onError('Произошла ошибка ' + xhr.status + ' ' + xhr.statusText);
         }
@@ -58,7 +54,7 @@
       });
 
       xhr.addEventListener('timeout', function () {
-        onError('Данные не успели отправиться за ' + (xhr.timeout / 1000) + 'с');
+        onError('Данные не успели отправиться за ' + (xhr.timeout / 1000) + ' секунд');
       });
 
       xhr.open('POST', URL);
