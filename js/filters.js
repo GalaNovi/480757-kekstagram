@@ -31,7 +31,7 @@
   };
 
   window.filtersEnable = function (callback) {
-    filterButtonClickCollback = callback;
+    filterButtonClickCollback = window.debounce(callback);
     addListenersForFilterButtons();
     filtersElement.classList.remove('img-filters--inactive');
   };
