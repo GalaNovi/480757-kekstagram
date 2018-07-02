@@ -2,10 +2,12 @@
 
 (function () {
   var SHOW_COMMENTS_QUANTITY = 5;
+  var LOAD_COMMENTS_QUANTITY = 5;
   var ESC_KEYCODE = 27;
   var bigPictureElement = document.querySelector('.big-picture');
   var bigPictureCloseElement = bigPictureElement.querySelector('.big-picture__cancel');
   var commentsShow = bigPictureElement.querySelector('.comments-show');
+  var loadCommentsButton = bigPictureElement.querySelector('.social__loadmore');
 
   // Открывает просмотр фотографии и вешает на документ обработчик нажатия ESC
   var openBigPictureElement = function () {
@@ -71,9 +73,30 @@
     }
   };
 
+  // Прячет кнопку загрузки комментарием, если их меньше показываемого количества
+  var hideLoadCommentsButton = function () {
+    var commentsElements = bigPictureElement.querySelectorAll('.social__comment');
+    if (commentsElements.length <= SHOW_COMMENTS_QUANTITY) {
+      loadCommentsButton.classList.add('hidden');
+    }
+  };
+
+  // Показывает следующие комментарии и обновляет их счет
+  var showNextComments = function () {
+    var commentsElements = Array.from(bigPictureElement.querySelectorAll('.social__comment'));
+    var hiddenComments = commentsElements.filter(function (comment) {
+      return comment.style.display === 'none';
+    });
+    for (var i = 0; i < LOAD_COMMENTS_QUANTITY && i < hiddenComments.length; i++) {
+      hiddenComments[i].style.display = '';
+    }
+    updateCommentsShowCount();
+  };
+
   // Изменяет и показываеет превью
   var showPreview = function (object) {
     changeBigCard(object);
+    hideLoadCommentsButton();
     hideComments();
     updateCommentsShowCount();
     openBigPictureElement();
@@ -90,6 +113,11 @@
   var onCrossClick = function () {
     closeBigPictureElement();
   };
+
+  // Обработчик для кнопки показа комментариев
+  loadCommentsButton.addEventListener('click', function () {
+    showNextComments();
+  });
 
   window.showPreview = showPreview;
 })();
