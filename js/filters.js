@@ -3,7 +3,7 @@
 (function () {
   var filtersElement = document.querySelector('.img-filters');
   var filterButtons = Array.from(filtersElement.querySelectorAll('.img-filters__button'));
-  var filterButtonClickCollback = null;
+  var filterButtonClickCallback = null;
 
   // Ищет активный фильтр
   var getActiveFilter = function (filters) {
@@ -19,7 +19,7 @@
       activeFilterButton.classList.remove('img-filters__button--active');
       filterButton.classList.add('img-filters__button--active');
       activeFilterButton = filterButton;
-      filterButtonClickCollback(filterButton);
+      filterButtonClickCallback(filterButton);
     });
   };
 
@@ -31,7 +31,7 @@
   };
 
   window.filtersEnable = function (callback) {
-    filterButtonClickCollback = window.debounce(callback);
+    filterButtonClickCallback = window.debounce(callback);
     addListenersForFilterButtons();
     filtersElement.classList.remove('img-filters--inactive');
   };

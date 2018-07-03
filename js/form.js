@@ -5,15 +5,12 @@
   var MIN_HASHTAG_LENGTH = 4;
   var HASHTAGS_QUANTITY = 5;
   var ESC_KEYCODE = 27;
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var uploadFileElement = document.querySelector('#upload-file');
   var editImageElement = document.querySelector('.img-upload__overlay');
   var editImageCloseElement = document.querySelector('#upload-cancel');
   var descriptionFieldElement = document.querySelector('.text__description');
   var hashtagsFieldElement = document.querySelector('.text__hashtags');
   var form = document.querySelector('.img-upload__form');
-  var fileChooser = document.querySelector('.img-upload__input');
-  var preview = document.querySelector('.img-upload__preview-image');
 
   // Открывает попап и вешает на документ обработчик нажатия ESC
   var openEditImageElement = function () {
@@ -116,28 +113,6 @@
     window.message.showError(errorText);
   };
 
-  // Обработчик загрузки файла
-  uploadFileElement.addEventListener('change', function () {
-    var file = fileChooser.files[0];
-    var fileName = file.name.toLowerCase();
-
-    var matches = FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-
-    if (matches) {
-      var reader = new FileReader();
-      reader.addEventListener('load', function () {
-        preview.src = reader.result;
-      });
-      reader.readAsDataURL(file);
-      openEditImageElement();
-      document.addEventListener('keydown', onPopupEscPress);
-    } else {
-      window.message.showError('Файл не является изображением');
-    }
-  });
-
   // Обработчик правильности написания хештегов
   hashtagsFieldElement.addEventListener('input', onInputChange);
 
@@ -146,4 +121,10 @@
     window.backend.sendData(new FormData(form), onSuccessLoad, onErrorLoad);
     evt.preventDefault();
   });
+
+  // Открывает форму
+  window.openForm = function () {
+    openEditImageElement();
+    document.addEventListener('keydown', onPopupEscPress);
+  };
 })();

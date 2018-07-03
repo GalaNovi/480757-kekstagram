@@ -4,9 +4,7 @@
   window.utils = {
     // Возвращает рандомное число в нужном диапазоне
     getRandomNumber: function (min, max) {
-      var number = 0;
-      number = Math.floor(Math.random() * (max + 1 - min) + min);
-      return number;
+      return Math.floor(Math.random() * (max + 1 - min) + min);
     },
     // Перетасовывает массив
     getShuffleArray: function (array) {
