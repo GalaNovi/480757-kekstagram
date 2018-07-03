@@ -23,27 +23,27 @@
 
   // Определяет уровень применения нужного фильтра
   var getLevelEffect = function (effect) {
-    var levelsEffects = {
-      none: '',
-      chrome: 'grayscale(' + 1 / 100 * scaleValueElement.value + ')',
-      sepia: 'sepia(' + 1 / 100 * scaleValueElement.value + ')',
-      marvin: 'invert(' + scaleValueElement.value + '%)',
-      phobos: 'blur(' + 3 / 100 * scaleValueElement.value + 'px)',
-      heat: 'brightness(' + ((2 / 100 * scaleValueElement.value) + 1) + ')'
-    };
-    return levelsEffects[effect];
+    switch (effect) {
+      case 'chrome': return 'grayscale(' + 1 / 100 * scaleValueElement.value + ')';
+      case 'sepia': return 'sepia(' + 1 / 100 * scaleValueElement.value + ')';
+      case 'marvin': return 'invert(' + scaleValueElement.value + '%)';
+      case 'phobos': return 'blur(' + 3 / 100 * scaleValueElement.value + 'px)';
+      case 'heat': return 'brightness(' + ((2 / 100 * scaleValueElement.value) + 1) + ')';
+      default: return '';
+    }
   };
 
   // Передает положение пина для вычисления уровня насыщенности
   // Линия уровня меняется в зависимости от положения пина
-  var changeScaleValueElement = function () {
-    scaleValueElement.value = parseInt(scalePinElement.style.left, 10);
-    scaleLevelElement.style.width = scalePinElement.style.left;
+  var changeScaleValueElement = function (newValue) {
+    scalePinElement.style.left = newValue;
+    scaleValueElement.value = parseInt(newValue, 10);
+    scaleLevelElement.style.width = newValue;
   };
 
   // Применяет фильтр
-  var applyEffect = function (effect) {
-    changeScaleValueElement();
+  var applyEffect = function (effect, value) {
+    changeScaleValueElement(value);
     imagePreviewElement.style.filter = getLevelEffect(effect);
   };
 
@@ -62,7 +62,7 @@
     scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
     imagePreviewElement.classList.remove('effects__preview--' + currentEffect);
     imagePreviewElement.classList.add('effects__preview--' + effectType);
-    applyEffect(effectType);
+    applyEffect(effectType, SCALE_PIN_VALUE_DEFAULT);
     currentEffect = effectType;
   };
 
@@ -88,7 +88,7 @@
     currentEffect = defaultEffect;
     scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
     imagePreviewElement.style.transform = '';
-    applyEffect(defaultEffect);
+    applyEffect(defaultEffect, SCALE_PIN_VALUE_DEFAULT);
     preview.src = '#';
   };
 
@@ -117,8 +117,8 @@
     evt.preventDefault();
     // Перемещает пин на место нажатия мышкой
     if (evt.target === scaleLineElement || evt.target === scaleLevelElement) {
-      scalePinElement.style.left = (evt.offsetX / scaleLineElement.offsetWidth * 100) + '%';
-      applyEffect(currentEffect);
+      var newValue = evt.offsetX / scaleLineElement.offsetWidth * 100 + '%';
+      applyEffect(currentEffect, newValue);
     }
 
     var pinStartCoordinateX = evt.clientX;
@@ -133,8 +133,8 @@
       var scalePinElementLeft = ((scalePinElement.offsetLeft - shift) / scaleLineElement.offsetWidth * 100);
 
       if (scalePinElementLeft > 0 && scalePinElementLeft < 100) {
-        scalePinElement.style.left = scalePinElementLeft + '%';
-        applyEffect(currentEffect);
+        newValue = scalePinElementLeft + '%';
+        applyEffect(currentEffect, newValue);
       }
     };
 
