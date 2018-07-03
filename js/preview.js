@@ -6,8 +6,11 @@
   var ESC_KEYCODE = 27;
   var bigPictureElement = document.querySelector('.big-picture');
   var bigPictureCloseElement = bigPictureElement.querySelector('.big-picture__cancel');
+  var commentsListElement = bigPictureElement.querySelector('.social__comments');
   var shownCommentsCount = bigPictureElement.querySelector('.comments-shown-count');
   var loadCommentsButton = bigPictureElement.querySelector('.social__loadmore');
+  var commentsData = null;
+  var shownComments = [];
 
   // Открывает просмотр фотографии и вешает на документ обработчик нажатия ESC
   var openBigPictureElement = function () {
@@ -21,17 +24,22 @@
     bigPictureElement.classList.add('hidden');
     document.removeEventListener('keydown', onBigPictureElementEscPress);
     bigPictureCloseElement.removeEventListener('click', onCrossClick);
+    commentsData = null;
+    shownComments = [];
   };
 
   //  Создает фрагмент с комментариями
   var createComments = function (object) {
+    commentsData = object.comments;
     var fragmentComments = document.createDocumentFragment();
-    for (var i = 0; i < object.comments.length; i++) {
+    var numberComments = commentsData.length <= SHOW_COMMENTS_QUANTITY ? commentsData.length : SHOW_COMMENTS_QUANTITY;
+    for (var i = 0; i < numberComments; i++) {
       var commentExample = document.querySelector('#comment').content.cloneNode(true).querySelector('li');
       commentExample.classList.add('social__comment--text');
       commentExample.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + window.utils.getRandomNumber(1, 6) + '.svg');
       commentExample.querySelector('.social__text').textContent = object.comments[i];
       fragmentComments.appendChild(commentExample);
+      shownComments.push(commentExample);
     }
     return fragmentComments;
   };
@@ -41,56 +49,23 @@
     bigPictureElement.querySelector('.big-picture__img').querySelector('img').setAttribute('src', object.url);
     bigPictureElement.querySelector('.likes-count').textContent = object.likes;
     bigPictureElement.querySelector('.comments-count').textContent = object.comments.length;
-    bigPictureElement.querySelector('.social__comments').innerHTML = '';
-    bigPictureElement.querySelector('.social__comments').appendChild(createComments(object));
+    commentsListElement.innerHTML = '';
+    commentsListElement.appendChild(createComments(object));
     bigPictureElement.querySelector('.social__caption').textContent = object.description || '';
   };
 
-  // Определяет сколько комментов показано и выводит это число на странице
-  var updateshownCommentsCountCount = function () {
-    var comments = document.querySelectorAll('.social__comment');
-    var showCommentsCount = 0;
-    for (var i = 0; i < comments.length; i++) {
-      if (comments[i].style.display === '') {
-        showCommentsCount += 1;
-      }
-    }
-    shownCommentsCount.textContent = showCommentsCount;
-  };
-
-  // Прячет лишние комментарии
-  var hideComments = function () {
-    var commentsElements = bigPictureElement.querySelectorAll('.social__comment');
-    if (commentsElements.length > SHOW_COMMENTS_QUANTITY) {
-      for (var i = SHOW_COMMENTS_QUANTITY; i < commentsElements.length; i++) {
-        commentsElements[i].style.display = 'none';
-      }
-    }
-  };
-
-  // Прячет кнопку загрузки комментарием, если все комментарии показаны
-  var hideLoadCommentsButton = function () {
-    var commentsElements = Array.from(bigPictureElement.querySelectorAll('.social__comment'));
-    var allshownCommentsCountn = !commentsElements.some(function (comment) {
-      return comment.style.display === 'none';
-    });
-    if (allshownCommentsCountn) {
-      loadCommentsButton.classList.add('hidden');
-    } else {
+  // Если показаны все комментарии - прячет кнопку, если нет - показывает
+  var showHideLoadCommentsButton = function () {
+    if (commentsData.length - shownComments.length) {
       loadCommentsButton.classList.remove('hidden');
+    } else {
+      loadCommentsButton.classList.add('hidden');
     }
   };
 
-  // Показывает следующие комментарии и обновляет их счет
-  var showNextComments = function () {
-    var commentsElements = Array.from(bigPictureElement.querySelectorAll('.social__comment'));
-    var hiddenComments = commentsElements.filter(function (comment) {
-      return comment.style.display === 'none';
-    });
-    for (var i = 0; i < LOAD_COMMENTS_QUANTITY && i < hiddenComments.length; i++) {
-      hiddenComments[i].style.display = '';
-    }
-    updateshownCommentsCountCount();
+  // Обновляет счетчик комметариев
+  var updateCommentsCount = function () {
+    shownCommentsCount.textContent = shownComments.length;
   };
 
   // Закрывает просмотр фотографии при нажатии на ESC
@@ -105,17 +80,36 @@
     closeBigPictureElement();
   };
 
-  // Обработчик для кнопки показа комментариев
-  loadCommentsButton.addEventListener('click', function () {
-    showNextComments();
-    hideLoadCommentsButton();
-  });
+  // Добавляет порцию комментариев
+  var onLoadCommentsButtonClick = function () {
+    var notShownComments = commentsData.length - shownComments.length;
+    if (notShownComments > 0) {
+      var fragmentComments = document.createDocumentFragment();
+      var numberComments = notShownComments <= LOAD_COMMENTS_QUANTITY ? notShownComments : LOAD_COMMENTS_QUANTITY;
+      var tempComments = [];
+      for (var i = 0; i < numberComments; i++) {
+        var commentExample = document.querySelector('#comment').content.cloneNode(true).querySelector('li');
+        commentExample.classList.add('social__comment--text');
+        commentExample.querySelector('.social__picture').setAttribute('src', 'img/avatar-' + window.utils.getRandomNumber(1, 6) + '.svg');
+        commentExample.querySelector('.social__text').textContent = commentsData[i + shownComments.length];
+        fragmentComments.appendChild(commentExample);
+        tempComments.push(commentExample);
+      }
+      commentsListElement.appendChild(fragmentComments);
+      shownComments = shownComments.concat(tempComments);
+    }
+    updateCommentsCount();
+    showHideLoadCommentsButton();
+  };
 
+  // Вешаем обработчик на кнопку
+  loadCommentsButton.addEventListener('click', onLoadCommentsButtonClick);
+
+  // Заполняет превью данными и показывает его
   window.showPreview = function (object) {
     changeBigCard(object);
-    hideComments();
-    hideLoadCommentsButton();
-    updateshownCommentsCountCount();
+    updateCommentsCount();
+    showHideLoadCommentsButton();
     openBigPictureElement();
   };
 })();
