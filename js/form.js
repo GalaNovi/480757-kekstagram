@@ -5,12 +5,12 @@
   var MIN_HASHTAG_LENGTH = 4;
   var HASHTAGS_QUANTITY = 5;
   var ESC_KEYCODE = 27;
-  var uploadFileElement = document.querySelector('#upload-file');
-  var editImageElement = document.querySelector('.img-upload__overlay');
-  var editImageCloseElement = document.querySelector('#upload-cancel');
-  var descriptionFieldElement = document.querySelector('.text__description');
-  var hashtagsFieldElement = document.querySelector('.text__hashtags');
   var form = document.querySelector('.img-upload__form');
+  var uploadFileElement = form.querySelector('#upload-file');
+  var editImageElement = form.querySelector('.img-upload__overlay');
+  var editImageCloseElement = form.querySelector('#upload-cancel');
+  var descriptionFieldElement = form.querySelector('.text__description');
+  var hashtagsFieldElement = form.querySelector('.text__hashtags');
 
   // Открывает попап и вешает на документ обработчик нажатия ESC
   var openEditImageElement = function () {

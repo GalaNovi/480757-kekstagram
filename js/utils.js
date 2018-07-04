@@ -8,12 +8,11 @@
     },
     // Перетасовывает массив
     getShuffleArray: function (array) {
-      for (var i = array.length - 1; i > 0; i--) {
+      array.forEach(function (element, i, arr) {
         var j = window.utils.getRandomNumber(0, i);
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-      }
+        arr[i] = arr[j];
+        arr[j] = element;
+      });
       return array;
     },
   };
