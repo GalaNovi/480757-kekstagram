@@ -25,11 +25,12 @@
 
   // Вешает обработчик клика на все кнопки фильтра
   var addListenersForFilterButtons = function () {
-    for (var i = 0; i < filterButtons.length; i++) {
-      filterButtonAddListener(filterButtons[i]);
-    }
+    filterButtons.forEach(function (filterButton) {
+      filterButtonAddListener(filterButton);
+    });
   };
 
+  // Выполняет колбэк, навешивает обработчики на кнопки фильтра и поазывает их
   window.filtersEnable = function (callback) {
     filterButtonClickCallback = window.debounce(callback);
     addListenersForFilterButtons();
