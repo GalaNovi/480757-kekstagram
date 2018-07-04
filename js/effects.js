@@ -7,19 +7,19 @@
   var MAX_SIZE_VALUE = 100;
   var MIN_SIZE_VALUE = 25;
   var editImageFormElement = document.querySelector('.img-upload__overlay');
+  var preview = editImageFormElement.querySelector('.img-upload__preview-image');
   var imagePreviewElement = editImageFormElement.querySelector('.img-upload__preview');
   var scaleBarElement = editImageFormElement.querySelector('.img-upload__scale');
   var scalePinElement = scaleBarElement.querySelector('.scale__pin');
   var scaleLevelElement = scaleBarElement.querySelector('.scale__level');
   var scaleValueElement = scaleBarElement.querySelector('.scale__value');
   var scaleLineElement = scaleBarElement.querySelector('.scale__line');
-  var defaultEffect = editImageFormElement.querySelector('input[type="radio"]:checked').value;
-  var currentEffect = defaultEffect;
   var resizeValueElement = editImageFormElement.querySelector('.resize__control--value');
   var resizeMinusButton = editImageFormElement.querySelector('.resize__control--minus');
   var resizePlusButton = editImageFormElement.querySelector('.resize__control--plus');
   var effectsListElement = editImageFormElement.querySelector('.effects__list');
-  var preview = document.querySelector('.img-upload__preview-image');
+  var defaultEffect = effectsListElement.querySelector('input[type="radio"]:checked').value;
+  var currentEffect = defaultEffect;
 
   // Определяет уровень применения нужного фильтра
   var getLevelEffect = function (effect) {
