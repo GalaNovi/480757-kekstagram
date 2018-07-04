@@ -49,11 +49,7 @@
 
   // Прячет слайдер если фильтра нет. Если есть - показывает.
   var switchEffectPanel = function (selectedEffect) {
-    if (selectedEffect === 'none') {
-      scaleBarElement.style.display = 'none';
-    } else if (selectedEffect !== 'none') {
-      scaleBarElement.style.display = 'block';
-    }
+    scaleBarElement.style.display = selectedEffect === 'none' ? 'none' : 'block';
   };
 
   // Меняет фильтр на выбранный
