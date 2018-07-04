@@ -2,13 +2,13 @@
 
 (function () {
   window.sorting = {
-    new: function (data, quantity) {
+    getNew: function (data, quantity) {
       var tempData = data.slice();
       tempData = window.utils.getShuffleArray(tempData);
       return tempData.slice(0, quantity);
     },
 
-    discussed: function (data) {
+    getDiscussed: function (data) {
       var tempData = data.slice();
       tempData.sort(function (left, right) {
         if (left.comments.length === right.comments.length) {
