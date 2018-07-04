@@ -31,7 +31,7 @@
   };
 
   // Выполняет колбэк, навешивает обработчики на кнопки фильтра и поазывает их
-  window.filtersEnable = function (callback) {
+  window.enableFilters = function (callback) {
     filterButtonClickCallback = window.debounce(callback);
     addListenersForFilterButtons();
     filtersElement.classList.remove('img-filters--inactive');

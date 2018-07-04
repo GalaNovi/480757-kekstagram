@@ -106,7 +106,7 @@
   // Функция успешной отправки сообщения
   var onSuccessLoad = function () {
     closeEditImageElement();
-    window.message.text('Информация успешно отправлена!');
+    window.message.showText('Информация успешно отправлена!');
   };
 
   var onErrorLoad = function (errorText) {

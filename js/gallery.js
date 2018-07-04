@@ -56,7 +56,7 @@
   var onSuccessLoad = function (data) {
     cardsData = data;
     renderCards(cardsData);
-    window.filtersEnable(updateCards);
+    window.enableFilters(updateCards);
   };
 
   var onErrorLoad = function (errorText) {

@@ -34,7 +34,7 @@
       message(text, ERROR_COLOR);
     },
 
-    text: function (text) {
+    showText: function (text) {
       message(text, SUCCESS_COLOR);
     }
   };
