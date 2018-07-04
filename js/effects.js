@@ -7,7 +7,7 @@
   var MAX_SIZE_VALUE = 100;
   var MIN_SIZE_VALUE = 25;
   var editImageFormElement = document.querySelector('.img-upload__overlay');
-  var preview = editImageFormElement.querySelector('.img-upload__preview-image');
+  var previewElement = editImageFormElement.querySelector('.img-upload__preview-image');
   var imagePreviewElement = editImageFormElement.querySelector('.img-upload__preview');
   var scaleBarElement = editImageFormElement.querySelector('.img-upload__scale');
   var scalePinElement = scaleBarElement.querySelector('.scale__pin');
@@ -15,8 +15,8 @@
   var scaleValueElement = scaleBarElement.querySelector('.scale__value');
   var scaleLineElement = scaleBarElement.querySelector('.scale__line');
   var resizeValueElement = editImageFormElement.querySelector('.resize__control--value');
-  var resizeMinusButton = editImageFormElement.querySelector('.resize__control--minus');
-  var resizePlusButton = editImageFormElement.querySelector('.resize__control--plus');
+  var resizeMinusButtonElement = editImageFormElement.querySelector('.resize__control--minus');
+  var resizePlusButtonElement = editImageFormElement.querySelector('.resize__control--plus');
   var effectsListElement = editImageFormElement.querySelector('.effects__list');
   var defaultEffect = effectsListElement.querySelector('input[type="radio"]:checked').value;
   var currentEffect = defaultEffect;
@@ -85,7 +85,7 @@
     scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
     imagePreviewElement.style.transform = '';
     applyEffect(defaultEffect, SCALE_PIN_VALUE_DEFAULT);
-    preview.src = '#';
+    previewElement.src = '#';
   };
 
   // Функция смены фильта
@@ -99,12 +99,12 @@
   effectsListElement.addEventListener('change', onEffectChange);
 
   // Обработчик для уменьшения изображения
-  resizeMinusButton.addEventListener('click', function () {
+  resizeMinusButtonElement.addEventListener('click', function () {
     resizeImage(-RESIZE_STEP);
   });
 
   // Обработчик для увеличения изображения
-  resizePlusButton.addEventListener('click', function () {
+  resizePlusButtonElement.addEventListener('click', function () {
     resizeImage(RESIZE_STEP);
   });
 

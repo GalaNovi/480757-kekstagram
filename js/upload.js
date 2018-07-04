@@ -2,11 +2,11 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var fileChooser = document.querySelector('.img-upload__input');
-  var preview = document.querySelector('.img-upload__preview-image');
+  var fileChooserElement = document.querySelector('.img-upload__input');
+  var previewElement = document.querySelector('.img-upload__preview-image');
 
-  fileChooser.addEventListener('change', function () {
-    var file = fileChooser.files[0];
+  fileChooserElement.addEventListener('change', function () {
+    var file = fileChooserElement.files[0];
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -16,7 +16,7 @@
     if (matches) {
       var reader = new FileReader();
       reader.addEventListener('load', function () {
-        preview.src = reader.result;
+        previewElement.src = reader.result;
       });
       reader.readAsDataURL(file);
       window.openForm();

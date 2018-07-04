@@ -2,7 +2,7 @@
 
 (function () {
   var filtersElement = document.querySelector('.img-filters');
-  var filterButtons = Array.from(filtersElement.querySelectorAll('.img-filters__button'));
+  var filterButtonsElements = Array.from(filtersElement.querySelectorAll('.img-filters__button'));
   var filterButtonClickCallback = null;
 
   // Ищет активный фильтр
@@ -11,7 +11,7 @@
       return element.classList.contains('img-filters__button--active');
     });
   };
-  var activeFilterButton = getActiveFilter(filterButtons);
+  var activeFilterButton = getActiveFilter(filterButtonsElements);
 
   // Вешает обработкик клика на одну кнопку фильтра
   var filterButtonAddListener = function (filterButton) {
@@ -25,7 +25,7 @@
 
   // Вешает обработчик клика на все кнопки фильтра
   var addListenersForFilterButtons = function () {
-    filterButtons.forEach(function (filterButton) {
+    filterButtonsElements.forEach(function (filterButton) {
       filterButtonAddListener(filterButton);
     });
   };

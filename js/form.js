@@ -5,12 +5,12 @@
   var MIN_HASHTAG_LENGTH = 4;
   var HASHTAGS_QUANTITY = 5;
   var ESC_KEYCODE = 27;
-  var form = document.querySelector('.img-upload__form');
-  var uploadFileElement = form.querySelector('#upload-file');
-  var editImageElement = form.querySelector('.img-upload__overlay');
-  var editImageCloseElement = form.querySelector('#upload-cancel');
-  var descriptionFieldElement = form.querySelector('.text__description');
-  var hashtagsFieldElement = form.querySelector('.text__hashtags');
+  var formElement = document.querySelector('.img-upload__form');
+  var uploadFileElement = formElement.querySelector('#upload-file');
+  var editImageElement = formElement.querySelector('.img-upload__overlay');
+  var editImageCloseElement = formElement.querySelector('#upload-cancel');
+  var descriptionFieldElement = formElement.querySelector('.text__description');
+  var hashtagsFieldElement = formElement.querySelector('.text__hashtags');
 
   // Открывает попап и вешает на документ обработчик нажатия ESC
   var openEditImageElement = function () {
@@ -23,7 +23,7 @@
     editImageElement.classList.add('hidden');
     uploadFileElement.value = '';
     editImageCloseElement.removeEventListener('click', onCrossClick);
-    form.reset();
+    formElement.reset();
     window.resetEffects();
   };
 
@@ -117,8 +117,8 @@
   hashtagsFieldElement.addEventListener('input', onInputChange);
 
   // Обработчик при отправке формы
-  form.addEventListener('submit', function (evt) {
-    window.backend.sendData(new FormData(form), onSuccessLoad, onErrorLoad);
+  formElement.addEventListener('submit', function (evt) {
+    window.backend.sendData(new FormData(formElement), onSuccessLoad, onErrorLoad);
     evt.preventDefault();
   });
 

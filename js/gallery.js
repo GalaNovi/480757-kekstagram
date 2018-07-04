@@ -7,8 +7,8 @@
 
   // Удаляет все миниатюры
   var deleteCards = function () {
-    var cards = cardsContainerElement.querySelectorAll('.picture__link');
-    cards.forEach(function (card) {
+    var cardsElements = cardsContainerElement.querySelectorAll('.picture__link');
+    cardsElements.forEach(function (card) {
       cardsContainerElement.removeChild(card);
     });
   };

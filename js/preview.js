@@ -7,8 +7,8 @@
   var bigPictureElement = document.querySelector('.big-picture');
   var bigPictureCloseElement = bigPictureElement.querySelector('.big-picture__cancel');
   var commentsListElement = bigPictureElement.querySelector('.social__comments');
-  var shownCommentsCount = bigPictureElement.querySelector('.comments-shown-count');
-  var commentsButton = bigPictureElement.querySelector('.social__loadmore');
+  var shownCommentsCountElement = bigPictureElement.querySelector('.comments-shown-count');
+  var commentsButtonElement = bigPictureElement.querySelector('.social__loadmore');
   var commentsData = null;
   var shownComments = [];
 
@@ -57,15 +57,15 @@
   // Если показаны все комментарии - прячет кнопку, если нет - показывает
   var showHideCommentsButton = function () {
     if (commentsData.length - shownComments.length) {
-      commentsButton.classList.remove('hidden');
+      commentsButtonElement.classList.remove('hidden');
     } else {
-      commentsButton.classList.add('hidden');
+      commentsButtonElement.classList.add('hidden');
     }
   };
 
   // Обновляет счетчик комметариев
   var updateCommentsCount = function () {
-    shownCommentsCount.textContent = shownComments.length;
+    shownCommentsCountElement.textContent = shownComments.length;
   };
 
   // Закрывает просмотр фотографии при нажатии на ESC
@@ -91,7 +91,7 @@
   };
 
   // Вешаем обработчик на кнопку
-  commentsButton.addEventListener('click', onCommentsButtonClick);
+  commentsButtonElement.addEventListener('click', onCommentsButtonClick);
 
   // Заполняет превью данными и показывает его
   window.showPreview = function (object) {
