@@ -25,9 +25,9 @@
     switch (filterButton.id) {
       case 'filter-popular': renderCards(cardsData);
         break;
-      case 'filter-new': renderCards(window.sorting.new(cardsData, NEW_CARDS_QUANTITY));
+      case 'filter-new': renderCards(window.sorting.getNew(cardsData, NEW_CARDS_QUANTITY));
         break;
-      case 'filter-discussed': renderCards(window.sorting.discussed(cardsData));
+      case 'filter-discussed': renderCards(window.sorting.getDiscussed(cardsData));
         break;
     }
   };
