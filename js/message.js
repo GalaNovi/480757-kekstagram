@@ -4,7 +4,7 @@
   var ERROR_COLOR = 'tomato';
   var SUCCESS_COLOR = '#2AA670';
 
-  var message = function (text, color) {
+  var showMessage = function (text, color) {
     var node = document.createElement('div');
     node.style = 'position: absolute; z-index: 100; padding: 20px 50px; text-align: center; background-color: white';
     node.style.border = '5px solid ' + color;
@@ -31,11 +31,11 @@
 
   window.message = {
     showError: function (text) {
-      message(text, ERROR_COLOR);
+      showMessage(text, ERROR_COLOR);
     },
 
     showText: function (text) {
-      message(text, SUCCESS_COLOR);
+      showMessage(text, SUCCESS_COLOR);
     }
   };
 })();
