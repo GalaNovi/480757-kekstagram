@@ -14,17 +14,22 @@
 
   // Открывает попап и вешает на документ обработчик нажатия ESC
   var openEditImageElement = function () {
-    editImageElement.classList.remove('hidden');
+    window.effects.addListeners();
+    window.effects.setDefault();
     editImageCloseElement.addEventListener('click', onCrossClick);
+    document.addEventListener('keydown', onPopupEscPress);
+    editImageElement.classList.remove('hidden');
   };
 
   // Закрывает попап, удаляет значение поля выбора файла и обработчик нажатия ESC
   var closeEditImageElement = function () {
     editImageElement.classList.add('hidden');
-    uploadFileElement.value = '';
+    window.effects.removeListeners();
     editImageCloseElement.removeEventListener('click', onCrossClick);
+    document.removeEventListener('keydown', onPopupEscPress);
+    window.effects.setDefault();
     formElement.reset();
-    window.resetEffects();
+    uploadFileElement.value = '';
   };
 
   // Получаем массив из хештегов, удаляет лишние пробелы
@@ -125,6 +130,5 @@
   // Открывает форму
   window.openForm = function () {
     openEditImageElement();
-    document.addEventListener('keydown', onPopupEscPress);
   };
 })();

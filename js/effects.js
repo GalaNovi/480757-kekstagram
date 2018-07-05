@@ -77,75 +77,77 @@
     applySize(resizeValueElement.value);
   };
 
-  // Задает стандартные фильтр
-  var setDefaultEffect = function () {
-    imagePreviewElement.classList.remove('effects__preview--' + currentEffect);
-    imagePreviewElement.classList.add('effects__preview--' + defaultEffect);
-    currentEffect = defaultEffect;
-    scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
-    imagePreviewElement.style.transform = '';
-    applyEffect(defaultEffect, SCALE_PIN_VALUE_DEFAULT);
-    previewElement.src = '#';
-  };
-
-  // Функция смены фильта
+  // Cмена фильта
   var onEffectChange = function (evt) {
     evt.preventDefault();
     var effectType = evt.target.value;
     changeEffect(effectType);
   };
 
-  // При переключении фильтра применяет его к превью фотографии
-  effectsListElement.addEventListener('change', onEffectChange);
-
-  // Обработчик для уменьшения изображения
-  resizeMinusButtonElement.addEventListener('click', function () {
+  // Уменьшение изображения
+  var onMinusButtonClick = function () {
     resizeImage(-RESIZE_STEP);
-  });
+  };
 
-  // Обработчик для увеличения изображения
-  resizePlusButtonElement.addEventListener('click', function () {
+  // Увеличение изображения
+  var onPlusButtonClick = function () {
     resizeImage(RESIZE_STEP);
-  });
+  };
 
-  // Обработчик перетаскивания пина
-  scaleLineElement.addEventListener('mousedown', function (evt) {
+  // Перетаскивание пина насыщщенности эффекта
+  var onScaleLineMouseDown = function (evt) {
     evt.preventDefault();
     // Перемещает пин на место нажатия мышкой
     if (evt.target === scaleLineElement || evt.target === scaleLevelElement) {
       var newValue = evt.offsetX / scaleLineElement.offsetWidth * 100 + '%';
       applyEffect(currentEffect, newValue);
     }
-
     var pinStartCoordinateX = evt.clientX;
-
     var onPinMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-
       var shift = pinStartCoordinateX - moveEvt.clientX;
-
       pinStartCoordinateX = moveEvt.clientX;
-
       var scalePinElementLeft = ((scalePinElement.offsetLeft - shift) / scaleLineElement.offsetWidth * 100);
-
       if (scalePinElementLeft > 0 && scalePinElementLeft < 100) {
         newValue = scalePinElementLeft + '%';
         applyEffect(currentEffect, newValue);
       }
     };
-
     var onPinMouseUp = function (upEvt) {
       upEvt.preventDefault();
-
       document.removeEventListener('mousemove', onPinMouseMove);
       document.removeEventListener('mouseup', onPinMouseUp);
     };
-
     document.addEventListener('mousemove', onPinMouseMove);
     document.addEventListener('mouseup', onPinMouseUp);
-  });
+  };
 
-  setDefaultEffect();
+  window.effects = {
+    // Навешивает обработчики на элементы виджета
+    addListeners: function () {
+      effectsListElement.addEventListener('change', onEffectChange);
+      resizeMinusButtonElement.addEventListener('click', onMinusButtonClick);
+      resizePlusButtonElement.addEventListener('click', onPlusButtonClick);
+      scaleLineElement.addEventListener('mousedown', onScaleLineMouseDown);
+    },
 
-  window.resetEffects = setDefaultEffect;
+    // Удаляет обработчики элементов виджета
+    removeListeners: function () {
+      effectsListElement.removeEventListener('change', onEffectChange);
+      resizeMinusButtonElement.removeEventListener('click', onMinusButtonClick);
+      resizePlusButtonElement.removeEventListener('click', onPlusButtonClick);
+      scaleLineElement.removeEventListener('mousedown', onScaleLineMouseDown);
+    },
+
+    // Сбрасывает настройки эффектов
+    setDefault: function () {
+      imagePreviewElement.classList.remove('effects__preview--' + currentEffect);
+      imagePreviewElement.classList.add('effects__preview--' + defaultEffect);
+      currentEffect = defaultEffect;
+      scalePinElement.style.left = SCALE_PIN_VALUE_DEFAULT;
+      imagePreviewElement.style.transform = '';
+      applyEffect(defaultEffect, SCALE_PIN_VALUE_DEFAULT);
+      previewElement.src = '#';
+    }
+  };
 })();

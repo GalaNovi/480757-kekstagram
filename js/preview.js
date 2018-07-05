@@ -14,9 +14,10 @@
 
   // Открывает просмотр фотографии и вешает на документ обработчик нажатия ESC
   var openBigPictureElement = function () {
-    bigPictureElement.classList.remove('hidden');
     document.addEventListener('keydown', onBigPictureElementEscPress);
     bigPictureCloseElement.addEventListener('click', onCrossClick);
+    commentsButtonElement.addEventListener('click', onCommentsButtonClick);
+    bigPictureElement.classList.remove('hidden');
   };
 
   // Закрывает просмотр фотографии, удаляет значение поля выбора файла и обработчик нажатия ESC
@@ -24,6 +25,7 @@
     bigPictureElement.classList.add('hidden');
     document.removeEventListener('keydown', onBigPictureElementEscPress);
     bigPictureCloseElement.removeEventListener('click', onCrossClick);
+    commentsButtonElement.removeEventListener('click', onCommentsButtonClick);
     commentsData = null;
     shownComments = [];
   };
@@ -89,9 +91,6 @@
     updateCommentsCount();
     showHideCommentsButton();
   };
-
-  // Вешаем обработчик на кнопку
-  commentsButtonElement.addEventListener('click', onCommentsButtonClick);
 
   // Заполняет превью данными и показывает его
   window.showPreview = function (object) {
