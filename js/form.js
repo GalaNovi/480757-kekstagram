@@ -24,12 +24,12 @@
   // Закрывает попап, удаляет значение поля выбора файла и обработчик нажатия ESC
   var closeEditImageElement = function () {
     editImageElement.classList.add('hidden');
-    window.effects.removeListeners();
-    editImageCloseElement.removeEventListener('click', onCrossClick);
-    document.removeEventListener('keydown', onPopupEscPress);
     window.effects.setDefault();
     formElement.reset();
     uploadFileElement.value = '';
+    window.effects.removeListeners();
+    editImageCloseElement.removeEventListener('click', onCrossClick);
+    document.removeEventListener('keydown', onPopupEscPress);
   };
 
   // Получаем массив из хештегов, удаляет лишние пробелы
@@ -81,7 +81,6 @@
     var isFieldActive = document.activeElement === hashtagsFieldElement || document.activeElement === descriptionFieldElement;
     if (evt.keyCode === ESC_KEYCODE && !isFieldActive) {
       closeEditImageElement();
-      document.removeEventListener('keydown', onPopupEscPress);
     }
   };
 

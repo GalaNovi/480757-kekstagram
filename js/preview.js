@@ -23,11 +23,11 @@
   // Закрывает просмотр фотографии, удаляет значение поля выбора файла и обработчик нажатия ESC
   var closeBigPictureElement = function () {
     bigPictureElement.classList.add('hidden');
+    commentsData = null;
+    shownComments = [];
     document.removeEventListener('keydown', onBigPictureElementEscPress);
     bigPictureCloseElement.removeEventListener('click', onCrossClick);
     commentsButtonElement.removeEventListener('click', onCommentsButtonClick);
-    commentsData = null;
-    shownComments = [];
   };
 
   //  Создает фрагмент с комментариями
